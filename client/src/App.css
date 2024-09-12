@@ -1,0 +1,39 @@
+#app{
+  display: flex;
+  flex-direction: column;
+  background-color: black;
+  border: 2px solid green;
+  margin: 2px;
+}
+
+#navBar{
+  border: 2px solid red;
+  background-color: purple;
+  margin: 2px;
+  height: 10vh;
+}
+
+#libraryAndContent{
+  display: flex;
+  flex-direction: row;
+  border: 2px solid red;
+  background-color: purple;
+  margin: 2px;
+  height: 90vh;
+}
+
+#library{
+  border: 2px solid red;
+  background-color: purple;
+  margin: 2px;
+  width: 30vw;
+
+}
+
+#allContent{
+  border: 2px solid red;
+  background-color: purple;
+  margin: 2px;
+  width: 70vw;
+}
+
