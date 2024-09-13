@@ -1,39 +1,39 @@
 #app{
+  height: 100vh;
+  padding: 5px;
   display: flex;
   flex-direction: column;
+  gap: 5px;
   background-color: black;
-  border: 2px solid green;
-  margin: 2px;
+  font: white;
+  /* border: 2px solid green; */
 }
 
-#navBar{
-  border: 2px solid red;
-  background-color: purple;
-  margin: 2px;
+#nav{
+  /* border: 2px solid red; */
+  padding: 0 2vw;
   height: 10vh;
 }
 
 #libraryAndContent{
   display: flex;
   flex-direction: row;
-  border: 2px solid red;
-  background-color: purple;
-  margin: 2px;
-  height: 90vh;
+  gap: 5px;
+  flex-grow: 1;
 }
 
 #library{
-  border: 2px solid red;
-  background-color: purple;
-  margin: 2px;
-  width: 30vw;
+  /* border: 2px solid red; */
+  border-radius: 7px;
+  background-color: #898b881f;
+  width: 25vw;
 
 }
 
 #allContent{
-  border: 2px solid red;
-  background-color: purple;
-  margin: 2px;
-  width: 70vw;
+  /* border: 2px solid red; */
+  border-radius: 7px;
+  background-color: #898b881f;
+  flex-grow: 1;
 }
 

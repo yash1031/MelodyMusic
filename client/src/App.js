@@ -5,8 +5,8 @@ import AllContent from "./Components/AllContent/AllContent";
 
 function App() {
   return (
-    <div id="App">
-      <div id="navBar">
+    <div id="app">
+      <div id="nav">
         <Navbar></Navbar>
       </div>
       <div id="libraryAndContent">
