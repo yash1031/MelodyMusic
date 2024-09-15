@@ -18,11 +18,12 @@ const Navbar = () => {
           </span>
         </span>
       </span>
-      {/* <span id="right-section1" style={{float: "right", height: "100%"}}>
+      <span id="right-section1" style={{float: "right", height: "100%"}}>
         <button className="btn" style={{fontWeight: "bold", color: "rgb(137 139 136 / 60%)"}}>Sign up</button>
         <button className="btn" style={{fontWeight: "bold", color: "black", padding: "0 40px", backgroundColor:"white", borderRadius: "25px", height: "100%"}}>Log in</button>
-      </span> */}
-      <span id="right-section2" style={{float: "right", height: "100%", display: "flex", alignItems: "center", gap: "2vw"}}>
+      </span>
+      {/* When Logged In below screen will be shown */}
+      {/* <span id="right-section2" style={{float: "right", height: "100%", display: "flex", alignItems: "center", gap: "2vw"}}>
         <button className="btn" style={{fontWeight: "bold", color: "black", padding: "0 20px", backgroundColor:"white", borderRadius: "25px", height: "100%"}}>Explore Premium</button>
         <button className="btn" style={{fontWeight: "bold", color: "white", height: "100%"}}>
           <i class="fa-solid fa-angles-down"></i>
@@ -30,7 +31,7 @@ const Navbar = () => {
         </button>
         <i class="fa-regular fa-bell fa-xl"></i>
         <span style={{ display: "flex", alignItems:"center", justifyContent: "center", fontWeight: "bold", borderRadius: "50%", height: "60%", aspectRatio: "1", backgroundColor: "purple"}}>Y</span>
-      </span>
+      </span> */}
     </div>
   )
 }
