@@ -1,9 +1,9 @@
 #app{
   height: 100vh;
-  padding: 5px;
+  padding: 8px;
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 8px;
   background-color: black;
   font: white;
   /* border: 2px solid green; */
@@ -11,14 +11,14 @@
 
 #nav{
   /* border: 2px solid red; */
-  padding: 0 2vw;
-  height: 10vh;
+  padding: 0 1vw;
+  height: 45px;
 }
 
 #libraryAndContent{
   display: flex;
   flex-direction: row;
-  gap: 5px;
+  gap: 8px;
   flex-grow: 1;
 }
 
