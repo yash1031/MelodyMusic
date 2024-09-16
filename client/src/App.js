@@ -5,8 +5,8 @@ import SignUp from "./Components/Pages/UserAuthorization/SignUp/SignUp";
 function App() {
   return (
     <>
-      <Home></Home>
-      {/* <SignUp></SignUp> */}
+      {/* <Home></Home> */}
+      <SignUp></SignUp>
     </>
   );
 }
