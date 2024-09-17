@@ -9,12 +9,12 @@ import ForgotPassword from "./Components/Pages/UserAuthorization/ForgotPassword/
 function App() {
   return (
     <>
-      {/* <Home></Home> */}
+      <Home></Home>
       {/* <SignUp></SignUp> */}
       {/* <EnterMobile></EnterMobile> */}
       {/* <EnterOTP></EnterOTP> */}
       {/* <LogIn></LogIn> */}
-      <ForgotPassword></ForgotPassword>
+      {/* <ForgotPassword></ForgotPassword> */}
     </>
   );
 }

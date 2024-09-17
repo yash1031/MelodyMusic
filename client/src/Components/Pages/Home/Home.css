@@ -21,6 +21,10 @@
     gap: 8px;
     flex-grow: 1;
   }
+
+  #signUpFooter{
+    height: 50px;
+  }
   
   #library{
     /* border: 2px solid red; */
