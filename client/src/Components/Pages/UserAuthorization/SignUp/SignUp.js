@@ -3,7 +3,7 @@ import GoogleLogo from './GoogleLogo.webp'
 const SignUp = () => {
   return (
     <>
-    <div style={{display: "flex", flexDirection: "column", gap: "25px", color: "white", width: "40vh", margin: "40px auto"}}>
+    <div style={{display: "flex", flexDirection: "column", gap: "25px", color: "white", width: "40vw", margin: "40px auto"}}>
         <i class="fa-solid fa-music fa-2xl" style={{fontWeight: "bold", display: "block", color: "white", margin: "auto"}}></i>
         <h1 style={{fontWeight: "bold", textAlign: "center", margin: "0 20px"}}>Sign up to start listening</h1>
         <section id="email">
@@ -16,7 +16,7 @@ const SignUp = () => {
           <span>&nbsp;or&nbsp;</span>
           <hr style={{display:"inline", width: "46%"}}/>
         </section>
-        <button style={{display: "block",border: "none", height: "50px", borderRadius: "25px", width: "100%",color: "black", backgroundColor: "rgb(59 198 59 / 96%)"}}>Next</button>
+        <button style={{display: "block",border: "none", height: "50px", borderRadius: "25px", width: "100%", backgroundColor: "rgb(59 198 59 / 96%)"}}>Next</button>
           <section style={{display: "flex", flexDirection: "column", gap: "5px"}}>
           <button style={{display: "block", border: "1px solid gray", height: "50px", borderRadius: "25px", width: "100%",color: "white", backgroundColor: "black"}}>Sign up with Google</button>
           <button style={{display: "block", border: "1px solid gray", height: "50px", borderRadius: "25px", width: "100%",color: "white", backgroundColor: "black"}}>Sign up with Facebook</button>
