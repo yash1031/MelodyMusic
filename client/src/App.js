@@ -4,6 +4,7 @@ import SignUp from "./Components/Pages/UserAuthorization/SignUp/SignUp";
 import EnterMobile from "./Components/Pages/UserAuthorization/SignUp/MobileSignUp/EnterMobile";
 import EnterOTP from "./Components/Pages/UserAuthorization/SignUp/MobileSignUp/EnterOTP";
 import LogIn from "./Components/Pages/UserAuthorization/LogIn/LogIn";
+import ForgotPassword from "./Components/Pages/UserAuthorization/ForgotPassword/ForgotPassword";
 
 function App() {
   return (
@@ -12,7 +13,8 @@ function App() {
       {/* <SignUp></SignUp> */}
       {/* <EnterMobile></EnterMobile> */}
       {/* <EnterOTP></EnterOTP> */}
-      <LogIn></LogIn>
+      {/* <LogIn></LogIn> */}
+      <ForgotPassword></ForgotPassword>
     </>
   );
 }
