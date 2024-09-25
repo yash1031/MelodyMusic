@@ -1,10 +1,25 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {
     Link, useLocation,
   } from "react-router-dom";
-
+import { auth, provider, signInWithPopup, signOut } from '../Pages/UserAuthorization/SignUp/SignUpWithGoogle/firebase';
 
 const Navbar = () => {
+
+  const [user,setUser]= useState(localStorage.getItem("user"));
+  
+  const handleSignOut = () => {
+    signOut(auth)
+      .then(() => {
+        setUser(null);
+        localStorage.setItem("user", user);
+        console.log("User signed out");
+      })
+      .catch((error) => {
+        console.error("Error during sign-out: ", error);
+      });
+  };
+
   return (
     <div id="navBar" style={{height: "100%"}}>
       <span id="left-section" style={{float: "left", display: "flex", alignItems:"center", height: "100%"}}>
@@ -26,16 +41,8 @@ const Navbar = () => {
           </span>
         </span>
       </span>
-      <span id="right-section1" style={{float: "right", height: "100%"}}>
-        <Link to='/sign-up'>
-          <button className="btn" style={{fontWeight: "bold", color: "rgb(137 139 136 / 60%)"}}>Sign up</button>
-        </Link>
-        <Link to='/log-in'>
-          <button className="btn" style={{fontWeight: "bold", color: "black", padding: "0 40px", backgroundColor:"white", borderRadius: "25px", height: "100%"}}>Log in</button>
-        </Link>
-      </span>
-      {/* When Logged In below screen will be shown */}
-      {/* <span id="right-section2" style={{float: "right", height: "100%", display: "flex", alignItems: "center", gap: "2vw"}}>
+      {user?
+      (<span id="right-section2" style={{float: "right", height: "100%", display: "flex", alignItems: "center", gap: "2vw"}}>
         <Link to='/premium' style={{ padding: "0 20px", backgroundColor:"white", borderRadius: "25px", height: "100%"}}>
           <button className="btn" style={{fontWeight: "bold", color: "black"}}>Explore Premium</button>
         </Link>
@@ -48,8 +55,18 @@ const Navbar = () => {
         <Link to= '/content-feed' style={{color: "white"}}> 
           <i class="fa-regular fa-bell fa-xl"/>
         </Link>
-        <span style={{ display: "flex", alignItems:"center", justifyContent: "center", fontWeight: "bold", borderRadius: "50%", height: "60%", aspectRatio: "1", backgroundColor: "purple"}}>Y</span>
-      </span> */}
+        <span onClick={handleSignOut} style={{ display: "flex", alignItems:"center", justifyContent: "center", fontWeight: "bold", borderRadius: "50%", height: "60%", aspectRatio: "1", backgroundColor: "purple"}}>Y</span>
+      </span>):
+      (<span id="right-section1" style={{float: "right", height: "100%"}}>
+        <Link to='/sign-up'>
+          <button className="btn" style={{fontWeight: "bold", color: "rgb(137 139 136 / 60%)"}}>Sign up</button>
+        </Link>
+        <Link to='/log-in'>
+          <button className="btn" style={{fontWeight: "bold", color: "black", padding: "0 40px", backgroundColor:"white", borderRadius: "25px", height: "100%"}}>Log in</button>
+        </Link>
+      </span>) }
+      
+      {/*  */}
     </div>
   )
 }

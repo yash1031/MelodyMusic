@@ -1,10 +1,25 @@
-import React from 'react'
+import React, {useState} from 'react'
 import GoogleLogo from './GoogleLogo.webp'
 import {
-    Link, useLocation,
+    Link, useLocation, useNavigate
   } from "react-router-dom";
+import { auth, provider, signInWithPopup, signOut} from './SignUpWithGoogle/firebase';
 
 const SignUp = () => {
+  const [user, setUser] = useState(null);
+  const navigate= useNavigate();
+  const signUpWithGoogle= ()=>{
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        setUser(result.user);
+        navigate('/');
+        localStorage.setItem("user", user);
+        console.log("User signed in: ", result.user);
+      })
+      .catch((error) => {
+        console.error("Error during sign-in: ", error);
+      });
+  }
   return (
     <>
     <div style={{display: "flex", flexDirection: "column", gap: "25px", color: "white", width: "40vw", margin: "40px auto"}}>
@@ -22,7 +37,11 @@ const SignUp = () => {
         </section>
         <button style={{display: "block",border: "none", height: "50px", borderRadius: "25px", width: "100%", backgroundColor: "rgb(59 198 59 / 96%)"}}>Next</button>
           <section style={{display: "flex", flexDirection: "column", gap: "5px"}}>
-          <button style={{display: "block", border: "1px solid gray", height: "50px", borderRadius: "25px", width: "100%",color: "white", backgroundColor: "black"}}>Sign up with Google</button>
+          {/* <Link to="/google-sign-up" style={{textDecoration: "none"}}> */}
+            <button onClick={signUpWithGoogle} style={{display: "block", border: "1px solid gray", height: "50px", borderRadius: "25px", width: "100%",color: "white", backgroundColor: "black"}}>
+              Sign up with Google
+            </button>
+          {/* </Link> */}
           <button style={{display: "block", border: "1px solid gray", height: "50px", borderRadius: "25px", width: "100%",color: "white", backgroundColor: "black"}}>Sign up with Facebook</button>
           <button style={{display: "block", border: "1px solid gray", height: "50px", borderRadius: "25px", width: "100%",color: "white", backgroundColor: "black"}}>Sign up with Apple</button>
         </section>

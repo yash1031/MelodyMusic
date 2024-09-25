@@ -14,6 +14,7 @@ import ExplorePremium from "./Components/MainScreen/ExplorePremium/ExplorePremiu
 import InstallApp from "./Components/MainScreen/InstallApp/InstallApp";
 import WhatsNew from "./Components/MainScreen/WhatsNew/WhatsNew";
 import AllContent from "./Components/MainScreen/AllContent/AllContent";
+import GoogleAuth from "./Components/Pages/UserAuthorization/SignUp/SignUpWithGoogle/GoogleAuth";
 
 const router = createBrowserRouter([
   {
