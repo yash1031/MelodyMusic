@@ -3,7 +3,7 @@ import React from 'react'
 const AllContent = () => {
   return (
     <div>
-      All Content will be displayed here
+      This is AllContent
     </div>
   )
 }

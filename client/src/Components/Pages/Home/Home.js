@@ -1,7 +1,7 @@
 import React from 'react'
 import Navbar from '../../Navbar/Navbar'
 import Library from '../../Library/Library'
-import AllContent from '../../AllContent/AllContent'
+import MainScreen from '../../MainScreen/MainScreen'
 import SignUpFooter from './SignUpFooter/SignUpFooter'
 import './Home.css'
 
@@ -15,8 +15,8 @@ const Home = () => {
             <div id="library">
                 <Library></Library>
             </div>
-            <div id="allContent">
-                <AllContent></AllContent>
+            <div id="mainScreen">
+                <MainScreen></MainScreen>
             </div>
         </div>
         <div id="signUpFooter">
