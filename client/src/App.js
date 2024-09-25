@@ -49,6 +49,18 @@ const router = createBrowserRouter([
   {
     path: "/log-in",
     element: <LogIn/>,
+  },
+  {
+    path: "/forgot-password",
+    element: <ForgotPassword/>,
+  },
+  {
+    path: "/enter-mobile",
+    element: <EnterMobile/>,
+  },
+  {
+    path: "/enter-otp",
+    element: <EnterOTP/>,
   }
 ]);
 

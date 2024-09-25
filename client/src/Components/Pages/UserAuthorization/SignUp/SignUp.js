@@ -1,5 +1,9 @@
 import React from 'react'
 import GoogleLogo from './GoogleLogo.webp'
+import {
+    Link, useLocation,
+  } from "react-router-dom";
+
 const SignUp = () => {
   return (
     <>
@@ -8,8 +12,8 @@ const SignUp = () => {
         <h1 style={{fontWeight: "bold", textAlign: "center", margin: "0 20px"}}>Sign up to start listening</h1>
         <section id="email">
           <h3>Email address</h3>
-          <input type="text" placeholder='name@domain.com' style={{display: "block", width:"100%", height: "40px", padding: "0 7px", backgroundColor: "black", font: "gray", borderRadius: "5px", border: "1px solid gray"}} />
-          <a id="mobileSignUp" href="#" style={{display: "block", color: "#2fb52f", fontWeight: "bold"}}>Use phone number instead</a>
+          <input type="text" placeholder='name@domain.com' style={{color: "white", display: "block", width:"100%", height: "40px", padding: "0 7px", backgroundColor: "black", font: "gray", borderRadius: "5px", border: "1px solid gray"}} />
+          <Link id="mobileSignUp" to="/enter-mobile" style={{display: "block", color: "#2fb52f", fontWeight: "bold"}}>Use phone number instead</Link>
         </section>
         <section style={{display: "flex"}}>
           <hr style={{display:"inline", width: "46%"}}/>
@@ -24,7 +28,7 @@ const SignUp = () => {
         </section>
         <hr />
         <section>
-          <span style={{color: "gray"}}>Already have an account?</span> <a href="#" style={{color: "white"}}>Log in here</a>
+          <span style={{color: "gray"}}>Already have an account?</span> <Link to="/log-in" style={{color: "white"}}>Log in here</Link>
         </section>
         <footer style={{fontSize: "13px", color: "gray", textAlign: "center"}}>
         This site is protected by reCAPTCHA and the Google

@@ -1,4 +1,7 @@
 import React from 'react'
+import {
+    Link, useLocation,
+  } from "react-router-dom";
 
 const LogIn = () => {
   return (
@@ -11,7 +14,7 @@ const LogIn = () => {
                 <button style={{display: "block", border: "1px solid gray", height: "50px", borderRadius: "25px", width: "100%",color: "white", backgroundColor: "#898b881f"}}>Continue with Google</button>
                 <button style={{display: "block", border: "1px solid gray", height: "50px", borderRadius: "25px", width: "100%",color: "white", backgroundColor: "#898b881f"}}>Continue with Facebook</button>
                 <button style={{display: "block", border: "1px solid gray", height: "50px", borderRadius: "25px", width: "100%",color: "white", backgroundColor: "#898b881f"}}>Continue with Apple</button>
-                <button style={{display: "block", border: "1px solid gray", height: "50px", borderRadius: "25px", width: "100%",color: "white", backgroundColor: "#898b881f"}}>Continue with phone number</button>
+                <Link to="/enter-mobile" style={{textDecoration: "none"}}><button style={{display: "block", border: "1px solid gray", height: "50px", borderRadius: "25px", width: "100%",color: "white", backgroundColor: "#898b881f"}}>Continue with phone number</button></Link>
                 </section>
                 <hr />
                 <section id="emailPassword" style={{display: "flex", flexDirection: "column", gap: "10px"}}>
@@ -25,9 +28,9 @@ const LogIn = () => {
                 </div>
                 </section>
                 <button style={{display: "block",border: "none", height: "50px", borderRadius: "25px", width: "100%", backgroundColor: "rgb(59 198 59 / 96%)"}}>Log In</button>
-                <a href="#" style={{color: "white", textAlign: "center"}}>Forgot your password?</a>
+                <Link to="/forgot-password" style={{color: "white", textAlign: "center"}}>Forgot your password?</Link>
                 <section>
-                <span style={{color: "gray"}}>Don't have an account?</span> <a href="#" style={{color: "white"}}>Sign up for Melody Music</a>
+                <span style={{color: "gray"}}>Don't have an account?</span> <Link to="/sign-up" style={{color: "white"}}>Sign up for Melody Music</Link>
                 </section>
             </div>
         </div>
