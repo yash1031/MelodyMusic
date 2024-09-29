@@ -4,7 +4,7 @@ const ForgotPassword = () => {
   return (
     
     <div style={{display: "flex", flexDirection: "column", gap: "15px", color: "white", width: "27vw", height: "100vh", margin: "0 auto", padding: "60px 0", paddingBottom: "20px"}}>
-        <i class="fa-solid fa-music fa-2xl" style={{fontWeight: "bold", display: "block", color: "white", margin: "0 auto"}}></i>
+        <i className="fa-solid fa-music fa-2xl" style={{fontWeight: "bold", display: "block", color: "white", margin: "0 auto"}}></i>
         <h1 style={{fontWeight: "bold", textAlign: "center"}}>Reset your password</h1>
         <p>Enter the email address or username linked to your Spotify account and we'll send you an email.</p>
         <section id="email">

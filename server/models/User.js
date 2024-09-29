@@ -14,9 +14,12 @@ const UserSchema = new Schema({
         unique: true,
         email: true
     },
-    password: {
-        type: String,
+    authPlatform: {
+        type: String, 
         required: true
+    },
+    password: {
+        type: String
     },
     date: {
         type: Date,

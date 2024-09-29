@@ -27,7 +27,7 @@ const EnterMobile = () => {
       <section style={{display: "flex", gap: "10px", width: "100%"}}>
         <button onClick={(e)=>showHideCountryCodes(e)} style={{position: "relative", display: "flex", alignItems: "center", justifyContent: "space-between", width: "15%", background: "black", border: "1px solid gray", height: "40px", borderRadius: "3px"}}>
             <span id="countryCodesBtn" style={{color: "white", float: "left"}}>{currentCountryCode}</span>
-            <i class="fa-solid fa-angle-down" style={{ color: "gray", float: "right"}}></i>
+            <i className="fa-solid fa-angle-down" style={{ color: "gray", float: "right"}}></i>
             <ul id="countryCodes" style={{display: "none", margin: "0", padding: "0", position: "absolute", top: "40px", left: "0", width: "100%", height: "50vh", overflow: "auto",  background: "black", color: "white", border: "1px solid gray", borderRadius: "3px", listStyleType: "none"}}>
                 {countryCodes.map((code)=>{
                     return (<li onClick={(e)=>{e.preventDefault(); setCurrentCountryCode(code) }} style={{textAlign: "start", paddingLeft: "5px"}}>{code}</li>)

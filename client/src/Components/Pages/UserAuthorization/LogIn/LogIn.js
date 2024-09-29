@@ -8,7 +8,7 @@ const LogIn = () => {
     <>
         <div style={{width: "50vw", background: "#898b881f", margin: "40px auto", padding: "50px 0", borderRadius: "7px"}}>
             <div style={{display: "flex", flexDirection: "column", gap: "25px", color: "white", width: "25vw", margin: " auto"}}>
-                <i class="fa-solid fa-music fa-2xl" style={{fontWeight: "bold", display: "block", color: "white", margin: "auto"}}></i>
+                <i className="fa-solid fa-music fa-2xl" style={{fontWeight: "bold", display: "block", color: "white", margin: "auto"}}></i>
                 <h1 style={{fontWeight: "bold", textAlign: "center", margin: "0 20px"}}>Log in to Melody Music</h1>
                 <section style={{display: "flex", flexDirection: "column", gap: "5px"}}>
                 <button style={{display: "block", border: "1px solid gray", height: "50px", borderRadius: "25px", width: "100%",color: "white", backgroundColor: "#898b881f"}}>Continue with Google</button>

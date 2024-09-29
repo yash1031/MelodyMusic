@@ -1,10 +1,11 @@
 import "./App.css";
 import Home from "./Components/Pages/Home/Home";
+import UserState from "./Context/User/UserState";
 import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom"
-import SignUp from "./Components/Pages/UserAuthorization/SignUp/SignUp";
+import SignUp, { MainSignUpPage } from "./Components/Pages/UserAuthorization/SignUp/SignUp";
 import EnterMobile from "./Components/Pages/UserAuthorization/SignUp/MobileSignUp/EnterMobile";
 import EnterOTP from "./Components/Pages/UserAuthorization/SignUp/MobileSignUp/EnterOTP";
 import LogIn from "./Components/Pages/UserAuthorization/LogIn/LogIn";
@@ -14,7 +15,10 @@ import ExplorePremium from "./Components/MainScreen/ExplorePremium/ExplorePremiu
 import InstallApp from "./Components/MainScreen/InstallApp/InstallApp";
 import WhatsNew from "./Components/MainScreen/WhatsNew/WhatsNew";
 import AllContent from "./Components/MainScreen/AllContent/AllContent";
-import GoogleAuth from "./Components/Pages/UserAuthorization/SignUp/SignUpWithGoogle/GoogleAuth";
+import Password from "./Components/Pages/UserAuthorization/SignUp/Password";
+import UserDetails from "./Components/Pages/UserAuthorization/SignUp/UserDetails";
+import ConsentForm from "./Components/Pages/UserAuthorization/SignUp/ConsentForm";
+// import GoogleAuth from "./Components/Pages/UserAuthorization/SignUp/SignUpWithGoogle/GoogleAuth";
 
 const router = createBrowserRouter([
   {
@@ -46,6 +50,25 @@ const router = createBrowserRouter([
   {
     path: "/sign-up",
     element: <SignUp/>,
+    // children:[
+    //   { 
+    //     index: true,  // Default child route
+    //     element: <MainSignUpPage/>
+    //   },
+    //   {
+    //     path: "step1",
+    //     element: <Password/>
+    //   },
+    //   {
+    //     path: "step2",
+    //     element: <UserDetails/>
+    //   },
+    //   {
+    //     path: "step3",
+    //     element: <ConsentForm/>
+    //   }
+    // ]
+
   },
   {
     path: "/log-in",
@@ -68,7 +91,7 @@ const router = createBrowserRouter([
 function App() {
   return (
     <>
-      <RouterProvider router={router} />
+      <UserState><RouterProvider router={router} /></UserState>
       {/* <SignUp></SignUp> */}
       {/* <EnterMobile></EnterMobile> */}
       {/* <EnterOTP></EnterOTP> */}
