@@ -56,14 +56,16 @@ router.post('/create-user',
                     name: req.body.name,
                     password: secPass,
                     email: req.body.email,
-                    authPlatform: req.body.authPlatform
+                    authPlatform: req.body.authPlatform,
+                    dob: req.body.dob,
+                    gender: req.body.gender
                 });
             }
 
             // User ID to uniquely Identify the user
             const data = {
                 user: {
-                id: user.id,
+                    id: user.id,
                 },
             };
 

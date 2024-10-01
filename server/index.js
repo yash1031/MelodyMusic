@@ -4,13 +4,14 @@ const {connectToMongo}= require('./db');
 require('dotenv').config();
 
 const startApp = async ()  => {
-    try {
-      let db = await connectToMongo();
-      console.log('Database name in app.js:', db);
-    } catch (error) {
-      console.error('Failed to connect to MongoDB:', error);
-    }
-  };
+  try {
+    let res = await connectToMongo();
+    if(res[0]== "Success") console.log(`Connected to Database: ${res[1]}`);
+    if(res[0]== "Failure") console.log(res[1]);
+  } catch (error) {
+    console.error('Failed to connect to DB:', error);
+  }
+};
   
 startApp();
 const app = express();

@@ -21,6 +21,14 @@ const UserSchema = new Schema({
     password: {
         type: String
     },
+    dob: {
+        type: Date,
+        // required: true
+    },
+    gender: {
+        type: String,
+        // required: true
+    },
     date: {
         type: Date,
         default: Date.now

@@ -9,14 +9,22 @@ import $ from 'jquery';
 const ConsentForm = () =>{
 
   const context= useContext(UserContext);
-  const {email, setEmail, password, setPassword, name, setName, dob, setDob, gender, setGender}= context;
+  const {createUser}= context;
   const [receiveMessage, setReceiveMessage]= useState("false");
   const [shareData, setShareData]= useState("false");
   const navigate= useNavigate();
 
-  const handleSignUp= (e) =>{
+  const handleSignUp= async (e) =>{
     console.log(receiveMessage, shareData);
-    navigate('/')
+    const userCreated= await createUser("Melody Music");
+    console.log("userCreated: "+ userCreated);
+    if(userCreated){
+      console.log("User created");
+      navigate('/');
+    }
+    else{
+      console.log("Error in user creation");
+    }
   }
 
   const handleChange= (e) =>{
@@ -38,7 +46,7 @@ const ConsentForm = () =>{
       </div>
       <div id="termsAndConditions">By clicking on sign-up, you agree to Spotify's <a href="#">Terms and Conditions of Use.</a></div>
       <div id="privacyPolicy">To learn more about how Spotify collects, uses, shares and protects your personal data, please see <a href="#">MelodyMusic's Privacy Policy.</a></div>
-      <button onClick= {(e)=> handleSignUp(e)}>Sign up</button>
+      <button onClick={(e)=> handleSignUp(e)}>Sign up</button>
     </>
   )
 }

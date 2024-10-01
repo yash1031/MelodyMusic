@@ -11,6 +11,7 @@ import ConsentForm from './ConsentForm';
 const SignUp = () => {
 
   const location = useLocation();
+  console.log("current location is: "+ JSON.stringify(location));
   
   // Conditionally render based on the URL fragment
   // Determine the component to render based on the URL fragment
