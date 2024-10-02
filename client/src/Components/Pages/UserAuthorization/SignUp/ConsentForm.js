@@ -16,14 +16,18 @@ const ConsentForm = () =>{
 
   const handleSignUp= async (e) =>{
     console.log(receiveMessage, shareData);
-    const userCreated= await createUser("Melody Music");
-    console.log("userCreated: "+ userCreated);
-    if(userCreated){
-      console.log("User created");
+    const queryString = window.location.search; // Returns the query string part of the URL including the "?"
+    const urlParams = new URLSearchParams(queryString);
+    // Accessing query parameters
+    const authPlatform = urlParams.get('authPlatform'); // "123"
+    console.log("authPlatform is: "+ authPlatform)
+    const userCreated= await createUser(authPlatform);
+    if(userCreated[0]){
+      console.log("Successful User creation: "+ userCreated[1]);
       navigate('/');
     }
     else{
-      console.log("Error in user creation");
+      console.log("Error in user creation: "+ userCreated[1]);
     }
   }
 

@@ -22,18 +22,17 @@ const UserState= (props)=>{
       });
       const json = await response.json();
       if (response.status === 200) {
-          console.log("Success")
           localStorage.setItem('token', json.message);
-          return true;
+          return [true, json.message];
       }
       else{
         console.log("Failure1: "+ json.message)
-          return false;
+          return [false, json.message];
       }
     }
     catch(error){
-      console.log("Failure2: "+ error);
-          return false;
+      // console.log("Failure2: "+ error);
+      return [false, error];
     }
   }
 

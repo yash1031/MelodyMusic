@@ -28,8 +28,12 @@ const Password = () =>{
     // If conditions on password string does not match return -> Write function
 
 
-
-    navigate('#step2'); // Programmatically change the URL to append #step1
+    const queryString = window.location.search; // Returns the query string part of the URL including the "?"
+    const urlParams = new URLSearchParams(queryString);
+    // Accessing query parameters
+    const authPlatform = urlParams.get('authPlatform'); // "123"
+    console.log("authPlatform is: "+ authPlatform)
+    navigate(`?authPlatform=${authPlatform}#step2`); // Programmatically change the URL to append #step1
   }
 
   const handlePwdOnBlur = (e, showHideElementID) => {

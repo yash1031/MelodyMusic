@@ -8,7 +8,7 @@ import {toast } from 'react-toastify';
 
 const MainSignUpPage = () => {
     const context= useContext(UserContext);
-    const {email, setEmail}= context;
+    const {email, setEmail, setName}= context;
     const [token, setToken] = useState(localStorage.getItem("token"));
     const navigate= useNavigate();
     const host= "http://localhost:5000";
@@ -18,35 +18,10 @@ const MainSignUpPage = () => {
     const signUpWithGoogle=  ()=>{
       signInWithPopup(auth, provider)
         .then(async (result) => {
-          const name= result.user.displayName;
-          const email= result.user.email;
           const authPlatform= "Google";
-          try{
-            // console.log("Inside try block")
-            const url= `${host}/api/auth/create-user`;
-            // console.log(host, url, name, email, authPlatform);
-            const response= await fetch(url,{
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({name, email, authPlatform}),
-            });
-            const json = await response.json();
-            if (response.status === 200) {
-              console.log("Success! Authentication Token is: "+ json.message);
-              // save the authToken and redirect
-              localStorage.setItem("token", json.message);
-              toast.success("Account Created Successfully");
-              navigate("/");
-            } else {
-              console.log("Error: "+ json.message);
-              toast.error(json.message)
-            }
-          }catch(error){
-            console.log("Error: "+ error);
-            toast.error(error)
-          }
+          setEmail(result.user.email)
+          setName(result.user.displayName)
+          navigate(`?authPlatform=${authPlatform}#step2`);
         })
         .catch((error) => {
           console.error("Error during sign-in: ", error);
@@ -61,7 +36,7 @@ const MainSignUpPage = () => {
        }
       // if NotValid show warning and set isValid as false;
       // check if email exists in DB, if not navigate to next page
-      navigate('#step1'); 
+      navigate('?authPlatform=Melody Music#step1'); 
     }
   
     const handleInput= (e)=>{

@@ -33,6 +33,7 @@ router.post('/create-user',
              // Checking whether the entered email already exists in database
             let user = await User.findOne({ email: req.body.email });
             if (user) {
+                console.log("Error1: email already existing")
                 return res.status(400).json({ message: "This email already exists. Enter a different email."});
             }
 
@@ -47,6 +48,7 @@ router.post('/create-user',
             }
 
             else{
+                console.log("User creation for melody music");
                 // Create a salt and add Salt added Hash out of the entered Password
                 const salt = await bcrypt.genSalt(10);
                 const secPass = await bcrypt.hash(req.body.password, salt);
