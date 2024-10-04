@@ -16,6 +16,7 @@ router.post('/create-user',
     [
         body("name", "Enter a valid name").isLength({min: 3}),
         body("email", "Enter a valid email").isEmail(),
+        body("mobile", "Enter a valid mobile no").isMobilePhone(),
         body("authPlatform", "keyName must be one of: Melody Music, Google, Facebook, Apply").isIn(['Melody Music', "Google", "Facebook", "Apple"]),
     ],
     async (req, res)=>{
@@ -37,17 +38,19 @@ router.post('/create-user',
                 return res.status(400).json({ message: "This email already exists. Enter a different email."});
             }
 
-            if(req.body.authPlatform!== "Melody Music"){
+            if(req.body.authPlatform=== "Mobile"){
                 // Create and insert User into Database
                 user = await User.create({
                     name: req.body.name,
-                    email: req.body.email,
-                    authPlatform: req.body.authPlatform
+                    mobile: req.body.mobile,
+                    authPlatform: req.body.authPlatform,
+                    dob: req.body.dob,
+                    gender: req.body.gender
                 });
 
             }
 
-            else{
+            else if(req.body.authPlatform=== "Melody Music"){
                 console.log("User creation for melody music");
                 // Create a salt and add Salt added Hash out of the entered Password
                 const salt = await bcrypt.genSalt(10);
@@ -62,6 +65,18 @@ router.post('/create-user',
                     dob: req.body.dob,
                     gender: req.body.gender
                 });
+            }
+
+            else {
+                // Create and insert User into Database
+                user = await User.create({
+                    name: req.body.name,
+                    email: req.body.email,
+                    authPlatform: req.body.authPlatform,
+                    dob: req.body.dob,
+                    gender: req.body.gender
+                });
+
             }
 
             // User ID to uniquely Identify the user

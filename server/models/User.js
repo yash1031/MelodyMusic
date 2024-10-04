@@ -10,9 +10,13 @@ const UserSchema = new Schema({
     },
     email: {
         type: String,
-        required: true,
         unique: true,
         email: true
+    },
+    mobile:{
+        type: String,
+        unique: true,
+        mobile: true
     },
     authPlatform: {
         type: String, 

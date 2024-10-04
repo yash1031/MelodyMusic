@@ -1,6 +1,6 @@
 // src/firebase.js
 import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
+import { getAuth, GoogleAuthProvider, RecaptchaVerifier, signInWithPhoneNumber, signInWithPopup, signOut } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_apiKey,
@@ -21,4 +21,4 @@ provider.setCustomParameters({
 });
 
 
-export { auth, provider, signInWithPopup, signOut };
+export { auth, provider, RecaptchaVerifier, signInWithPhoneNumber, signInWithPopup, signOut };
