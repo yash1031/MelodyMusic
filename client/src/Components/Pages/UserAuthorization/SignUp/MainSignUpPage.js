@@ -9,10 +9,7 @@ import {toast } from 'react-toastify';
 const MainSignUpPage = () => {
     const context= useContext(UserContext);
     const {email, setEmail, setName}= context;
-    const [token, setToken] = useState(localStorage.getItem("token"));
     const navigate= useNavigate();
-    const host= "http://localhost:5000";
-    const [isValid, setIsValid]= useState(true);
     // console.log(host);
   
     const signUpWithGoogle=  ()=>{

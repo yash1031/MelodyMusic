@@ -36,8 +36,34 @@ const UserState= (props)=>{
     }
   }
 
+  const loginUser= async (loggingEmail, loggingPassword, authPlatform) =>{
+    console.log("In UserState: ", loggingEmail, loggingPassword, authPlatform);
+    try{
+      const response= await fetch(`${host}/api/auth/login-user`,{
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({loggingEmail, loggingPassword, authPlatform}),
+      });
+      const json = await response.json();
+      if (response.status === 200) {
+          localStorage.setItem('token', json.message);
+          return [true, json.message];
+      }
+      else{
+        console.log("Failure1: "+ json.message)
+          return [false, json.message];
+      }
+    }
+    catch(error){
+      console.log("Failure2: "+ error);
+      return [false, error];
+    }
+  }
+
   return (
-    <UserContext.Provider value={{email, setEmail, password, setPassword, name, setName, dob, setDob, gender, setGender, createUser}}>
+    <UserContext.Provider value={{loginUser, email, setEmail, password, setPassword, name, setName, dob, setDob, gender, setGender, createUser}}>
       {props.children}
     </UserContext.Provider>
   )

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
-import { auth, RecaptchaVerifier, signInWithPhoneNumber } from '../SignUp/SignUpWithGoogle/firebase';
-import {grecaptcha} from "firebase/auth";
+import { auth, RecaptchaVerifier, signInWithPhoneNumber, connectAuthEmulator } from '../SignUp/SignUpWithGoogle/firebase';
 
 
 const EnterMobile = () => {
@@ -33,21 +32,16 @@ const EnterMobile = () => {
   const sendOtp= (e)=>{
     e.preventDefault();
 
-    console.log('Auth:', auth);
-
-    // Ensure reCAPTCHA is set up
-    // if (window.recaptchaVerifier) {
-    //   console.log('recaptchaVerifier in if: ', window.recaptchaVerifier)
-    //   window.recaptchaVerifier.clear();
-    // }
+    console.log('Auth is:', auth);
+    // connectAuthEmulator(auth, 'http://localhost:3000');
 
     if (!window.recaptchaVerifier){
         window.recaptchaVerifier = new RecaptchaVerifier(auth, 'sendOTP', {
           size: 'invisible'
         });
     }
-    window.recaptchaVerifier.clear();
-    console.log('recaptchaVerifier: ', window.recaptchaVerifier)
+    // window.recaptchaVerifier.clear();
+    console.log('recaptchaVerifier is: ', window.recaptchaVerifier)
     const appVerifier = window.recaptchaVerifier;
 
     signInWithPhoneNumber(auth, phoneNumber, appVerifier)
@@ -56,13 +50,10 @@ const EnterMobile = () => {
         alert('OTP has been sent to your phone.');
       })
       .catch((error) => {
-        console.error('Error sending OTP:', error.message);
+        console.log('Error sending OTP:', error.message);
         alert(error.message);
       });
     // Or, if you haven't stored the widget ID:
-    // window.recaptchaVerifier.render().then(function(widgetId) {
-    //   grecaptcha.reset(widgetId);
-    // });
     // const queryString = window.location.search; // Returns the query string part of the URL including the "?"
     // const urlParams = new URLSearchParams(queryString);
     // // Accessing query parameters
@@ -91,8 +82,8 @@ const EnterMobile = () => {
         </button>
         <input type="text" placeholder='Phone number' onChange={e=> inputPhone(e)} value={phoneNumber} style={{flex: "1", background: "black", border: "1px solid gray", borderRadius: "3px", height: "40px", padding: "0 10px", color: "white"}}/>
       </section>
-      <div id="recaptcha-container"></div>
       <button id="sendOTP" onClick={(e)=>sendOtp(e)} style={{alignSelf: "flex-start", border: "none", height: "50px", padding: "0 35px", borderRadius: "25px", color: "white", backgroundColor: "rgb(59 198 59 / 96%)"}}>Next</button>
+      <div id="recaptcha"></div>
     </div>
   ) 
 }

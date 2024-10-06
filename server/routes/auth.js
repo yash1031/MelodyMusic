@@ -16,7 +16,6 @@ router.post('/create-user',
     [
         body("name", "Enter a valid name").isLength({min: 3}),
         body("email", "Enter a valid email").isEmail(),
-        body("mobile", "Enter a valid mobile no").isMobilePhone(),
         body("authPlatform", "keyName must be one of: Melody Music, Google, Facebook, Apply").isIn(['Melody Music', "Google", "Facebook", "Apple"]),
     ],
     async (req, res)=>{
@@ -97,6 +96,66 @@ router.post('/create-user',
             res.status(400).json({ message: error.msg});
         }
     }
+)
+
+router.post('/login-user',
+    [
+        body("loggingEmail", "Enter a valid email").isEmail(),
+        body("authPlatform", "keyName must be one of: Melody Music, Google, Facebook, Apply").isIn(['Melody Music', "Google", "Facebook", "Apple"])
+    ],
+
+    async (req, res)=>{
+        // Validating the request body as per the above conditions
+        const errors = validationResult(req);
+        let result = false;
+        console.log("email", req.body.loggingEmail);
+        console.log("password", req.body.loggingPassword);
+
+        // If the validation holds false, errors will contain an array with the desciption of error
+        if (!errors.isEmpty()) {
+            console.log("Error0", errors.array())
+            return res.status(400).json({ message: errors.array().msg});
+        }
+
+        try{
+            const email= req.body.loggingEmail;
+            const authPlatform= req.body.authPlatform;
+
+            //Email entered by the user should exit in database
+            let user = await User.findOne({ email });
+            if (!user) {
+                console.log("Error1")
+                return res.status(400).json({message: "User not found.",});
+            }
+            if(authPlatform=== "Melody Music"){
+                //Check whether entered password by the user is correct
+                const passwordCompare = await bcrypt.compare(req.body.loggingPassword, user.password);
+                if (!passwordCompare) {
+                    console.log("Error2")
+                    return res.status(400).json({message: "Please try to login with correct credentials."});
+                }
+            }
+
+            // User ID to uniquely Identify the user
+            const data = {
+                user: {
+                id: user.id,
+                },
+            };
+
+            // Create a authentication token, first argument is data/payload and second is Secret String for Signature
+            const authToken = jwt.sign(data, JWT_SECRET);
+            // console.log(`Success! User ${email} logged in: ` + authToken);
+            res.status(200).json({message:authToken });
+        }
+        catch(error){
+            console.log(error.msg);
+            res.status(500).json({message: "Internal Server Error" });
+
+        }
+    }
+
+
 )
 
 module.exports= router;
