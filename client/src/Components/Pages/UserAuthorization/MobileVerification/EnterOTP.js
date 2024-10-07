@@ -1,11 +1,13 @@
-import React, {useState} from 'react'
+import React, {useState, useContext} from 'react'
 import { useNavigate } from 'react-router-dom';
+import UserContext from '../../../../Context/User/UserContext';
 
 const EnterOTP = () => {
   const navigate= useNavigate();
   const [otp, setOtp] = useState('');
-
-  const verifyOtp= (e) =>{
+  const context= useContext(UserContext);
+  const {fullPhone, loginUser}= context;
+  const verifyOtp= async (e) =>{
     e.preventDefault();
 
     const queryString = window.location.search; // Returns the query string part of the URL including the "?"
@@ -13,21 +15,33 @@ const EnterOTP = () => {
     // Accessing query parameters
     const authPlatform = urlParams.get('authPlatform'); // "123"
     const confirmationResult= urlParams.get('confirmationResult');
+    const flow= urlParams.get('flow');
     console.log("authPlatform is: "+ authPlatform)
-
-    if (confirmationResult) {
-      confirmationResult.confirm(otp)
-        .then((result) => {
-          // Successfully signed in
-          console.log('User signed in:', result.user);
-          alert('User authenticated successfully');
-          // navigate(`/sign-up?authPlatform=${authPlatform}#step2`);
-        })
-        .catch((error) => {
-          console.error('Error verifying OTP:', error);
-          alert('Invalid OTP');
-        });
+    if(flow=== 'logIn') {
+      const loggedinUser= await loginUser({mobile: fullPhone, authPlatform});
+      if(loggedinUser[0]){
+        console.log("Successfully loggedin User: "+ loggedinUser[1]);
+        navigate('/');
+      }
+      else{
+          alert(loggedinUser[1]);
+          console.log("Error in loggingIn User: "+ loggedinUser[1]);
+      }
     }
+    else navigate(`/sign-up?authPlatform=${authPlatform}#step2`);
+    // if (confirmationResult) {
+    //   confirmationResult.confirm(otp)
+    //     .then((result) => {
+    //       // Successfully signed in
+    //       console.log('User signed in:', result.user);
+    //       alert('User authenticated successfully');
+    //       // navigate(`/sign-up?authPlatform=${authPlatform}#step2`);
+    //     })
+    //     .catch((error) => {
+    //       console.error('Error verifying OTP:', error);
+    //       alert('Invalid OTP');
+    //     });
+    // }
   }
 
   const inputOtp= (e)=>{

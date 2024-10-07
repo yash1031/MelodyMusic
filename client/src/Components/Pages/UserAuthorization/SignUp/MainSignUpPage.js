@@ -56,7 +56,7 @@ const MainSignUpPage = () => {
             <div id="emailRequired" style={{display:"none", color:"Red"}}>
                 Required*
             </div>
-            <Link id="mobileSignUp" to="/enter-mobile?authPlatform=Mobile" style={{display: "block", color: "#2fb52f", fontWeight: "bold"}}>Use phone number instead</Link>
+            <Link id="mobileSignUp" to="/enter-mobile?authPlatform=Mobile&flow=signUp" style={{display: "block", color: "#2fb52f", fontWeight: "bold"}}>Use phone number instead</Link>
           </section>
           <section style={{display: "flex"}}>
             <hr style={{display:"inline", width: "46%"}}/>

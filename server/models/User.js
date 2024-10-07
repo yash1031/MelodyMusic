@@ -9,9 +9,9 @@ const UserSchema = new Schema({
         required: true
     },
     email: {
+        //somehow adjust either email is null or it is unique
         type: String,
-        unique: true,
-        email: true
+        // email: true
     },
     mobile:{
         type: String,

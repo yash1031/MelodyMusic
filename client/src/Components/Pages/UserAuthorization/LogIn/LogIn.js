@@ -5,8 +5,6 @@ import {
 import { auth, provider, signInWithPopup } from '../SignUp/SignUpWithGoogle/firebase';
 import UserContext from '../../../../Context/User/UserContext';
 
-
-
 const LogIn = () => {
     
     const context= useContext(UserContext);
@@ -15,7 +13,7 @@ const LogIn = () => {
     
     const handleLogin= async(authPlatform)=>{
         console.log("email is: ", email, "authPlatform is: ", authPlatform);
-        const loggedinUser= await loginUser(email, password, authPlatform);
+        const loggedinUser= await loginUser({loggingEmail: email, loggingPassword: password, authPlatform});
         if(loggedinUser[0]){
             console.log("Successfully loggedin User: "+ loggedinUser[1]);
             navigate('/');
@@ -39,7 +37,7 @@ const LogIn = () => {
             console.log("result: ", result)
             // await setEmail(email=> email= result.user.email);
             const authPlatform= "Google";
-            const loggedinUser= await loginUser(result.user.email, '', authPlatform);
+            const loggedinUser= await loginUser({loggingEmail: result.user.email, authPlatform});
             if(loggedinUser[0]){
                 console.log("Successfully loggedin User: "+ loggedinUser[1]);
                 navigate('/');
@@ -65,7 +63,7 @@ const LogIn = () => {
                 <button onClick={logInWithGoogle} style={{display: "block", border: "1px solid gray", height: "50px", borderRadius: "25px", width: "100%",color: "white", backgroundColor: "#898b881f"}}>Continue with Google</button>
                 <button style={{display: "block", border: "1px solid gray", height: "50px", borderRadius: "25px", width: "100%",color: "white", backgroundColor: "#898b881f"}}>Continue with Facebook</button>
                 <button style={{display: "block", border: "1px solid gray", height: "50px", borderRadius: "25px", width: "100%",color: "white", backgroundColor: "#898b881f"}}>Continue with Apple</button>
-                <Link to="/enter-mobile" style={{textDecoration: "none"}}><button style={{display: "block", border: "1px solid gray", height: "50px", borderRadius: "25px", width: "100%",color: "white", backgroundColor: "#898b881f"}}>Continue with phone number</button></Link>
+                <Link to="/enter-mobile?authPlatform=Mobile&flow=logIn" style={{textDecoration: "none"}}><button style={{display: "block", border: "1px solid gray", height: "50px", borderRadius: "25px", width: "100%",color: "white", backgroundColor: "#898b881f"}}>Continue with phone number</button></Link>
                 </section>
                 <hr />
                 <section id="emailPassword" style={{display: "flex", flexDirection: "column", gap: "10px"}}>

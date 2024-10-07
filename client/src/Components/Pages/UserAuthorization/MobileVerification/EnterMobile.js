@@ -1,14 +1,16 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { auth, RecaptchaVerifier, signInWithPhoneNumber, connectAuthEmulator } from '../SignUp/SignUpWithGoogle/firebase';
-
+import UserContext from '../../../../Context/User/UserContext';
 
 const EnterMobile = () => {
-  let [currentCountryCode, setCurrentCountryCode]= useState('+91');
+  const [currentCountryCode, setCurrentCountryCode]= useState('+91');
   const countryCodes= ["+20","+27","+51","+52","+54","+55","+56","+57","+62","+66","+84","+91","+212","+213","+233","+234","+254","+255","+256","+593","+852","+966","+971"]  
   const [phoneNumber, setPhoneNumber] = useState('');
   const [confirmationResult, setConfirmationResult] = useState(null);
   const navigate= useNavigate();
+  const context= useContext(UserContext);
+  const {fullPhone, setFullPhone, mobileExist}= context;
 
   document.addEventListener('click', (e)=>{
     // console.log("Background Clicked")
@@ -22,6 +24,7 @@ const EnterMobile = () => {
         // countryCodesElement.style.display= "none";
     // }
   })
+
   const showHideCountryCodes= (e) =>{
     e.preventDefault();
     console.log("button clicked")
@@ -29,42 +32,53 @@ const EnterMobile = () => {
     countryCodesElement.style.display===""? countryCodesElement.style.display= "none": countryCodesElement.style.display=""; 
   }
 
-  const sendOtp= (e)=>{
+  const sendOtp= async (e)=>{
     e.preventDefault();
 
-    console.log('Auth is:', auth);
-    // connectAuthEmulator(auth, 'http://localhost:3000');
+    const queryString = window.location.search; // Returns the query string part of the URL including the "?"
+    const urlParams = new URLSearchParams(queryString);
+    // Accessing query parameters
+    const authPlatform = urlParams.get('authPlatform'); // "123"
+    console.log("authPlatform is: "+ authPlatform)
+    const flow = urlParams.get('flow'); // "123"
+    console.log("flow is: "+ flow)
 
-    if (!window.recaptchaVerifier){
-        window.recaptchaVerifier = new RecaptchaVerifier(auth, 'sendOTP', {
-          size: 'invisible'
-        });
+    if(flow=="logIn"){
+      const mobileExisted= await mobileExist(fullPhone);
+      if(!mobileExisted[0]){
+        alert(mobileExisted[1]);
+        return;
+      }
+      
     }
-    // window.recaptchaVerifier.clear();
-    console.log('recaptchaVerifier is: ', window.recaptchaVerifier)
-    const appVerifier = window.recaptchaVerifier;
+    // console.log('Auth is:', auth);
+    // // connectAuthEmulator(auth, 'http://localhost:3000');
 
-    signInWithPhoneNumber(auth, phoneNumber, appVerifier)
-      .then((result) => {
-        setConfirmationResult(result);
-        alert('OTP has been sent to your phone.');
-      })
-      .catch((error) => {
-        console.log('Error sending OTP:', error.message);
-        alert(error.message);
-      });
-    // Or, if you haven't stored the widget ID:
-    // const queryString = window.location.search; // Returns the query string part of the URL including the "?"
-    // const urlParams = new URLSearchParams(queryString);
-    // // Accessing query parameters
-    // const authPlatform = urlParams.get('authPlatform'); // "123"
-    // console.log("authPlatform is: "+ authPlatform)
-    // // navigate(`/enter-otp?authPlatform=${authPlatform}&confirmationResult=${confirmationResult}`);
+    // if (!window.recaptchaVerifier){
+    //     window.recaptchaVerifier = new RecaptchaVerifier(auth, 'sendOTP', {
+    //       size: 'invisible'
+    //     });
+    // }
+    // // window.recaptchaVerifier.clear();
+    // console.log('recaptchaVerifier is: ', window.recaptchaVerifier)
+    // const appVerifier = window.recaptchaVerifier;
+
+    // signInWithPhoneNumber(auth, fullPhone, appVerifier)
+    //   .then((result) => {
+    //     setConfirmationResult(result);
+    //     alert('OTP has been sent to your phone.');
+    //   })
+    //   .catch((error) => {
+    //     console.log('Error sending OTP:', error.message);
+    //     alert(error.message);
+    //   });
+    navigate(`/enter-otp?authPlatform=${authPlatform}&confirmationResult=${confirmationResult}&flow=${flow}`);
   }
 
   const inputPhone= (e)=>{
     e.preventDefault();
     setPhoneNumber(e.target.value);
+    setFullPhone(currentCountryCode+ e.target.value)
   }
 
   return (
