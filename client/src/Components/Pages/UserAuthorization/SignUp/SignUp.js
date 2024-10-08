@@ -18,7 +18,7 @@ const SignUp = () => {
   let componentToRender;
   switch (location.hash) {
     case '#step1':
-      componentToRender = <Password />;
+      componentToRender = <Password type="accountCreation"/>;
       break;
     case '#step2':
       componentToRender = <UserDetails />;

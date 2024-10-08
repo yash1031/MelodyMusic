@@ -15,6 +15,7 @@ import ExplorePremium from "./Components/MainScreen/ExplorePremium/ExplorePremiu
 import InstallApp from "./Components/MainScreen/InstallApp/InstallApp";
 import WhatsNew from "./Components/MainScreen/WhatsNew/WhatsNew";
 import AllContent from "./Components/MainScreen/AllContent/AllContent";
+import CreateNewPassword from "./Components/Pages/UserAuthorization/ForgotPassword/CreateNewPassword";
 
 const router = createBrowserRouter([
   {
@@ -63,6 +64,10 @@ const router = createBrowserRouter([
   {
     path: "/enter-otp",
     element: <EnterOTP/>,
+  },
+  {
+    path: "/password-reset",
+    element: <CreateNewPassword/>,
   }
 ]);
 

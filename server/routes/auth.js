@@ -3,6 +3,7 @@ const router= express.Router();
 const {body, validationResult}= require("express-validator")
 const User= require('../models/User')
 const bcrypt= require('bcryptjs');
+const nodemailer = require("nodemailer");
 require('dotenv').config
 
 // Package for creating JWT
@@ -10,6 +11,9 @@ var jwt = require("jsonwebtoken");
 
 // Secret String to create JWT Signature
 const JWT_SECRET = process.env.REACT_APP_JWT_SECRET;
+
+const nodemailer_user= process.env.REACT_APP_nodemailer_user;
+const nodemailer_password= process.env.REACT_APP_password;
 
 //Router1: Create a user
 router.post('/create-user',
@@ -198,4 +202,42 @@ router.post('/mobile-exist',
     }
 )
 
+// Set up nodemailer transporter
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: nodemailer_user,
+      pass: nodemailer_password
+    }
+});
+
+router.post('/send-email',[],
+    async(req, res)=>{
+        try{
+            const email= req.body.email;
+            const user= await User.findOne({email});
+            if(!user){
+                return res.status(400).json({message: "User does not exist"});
+            }  
+            const link= `http://localhost:3000/password-reset?user_id=${user}`;
+            // Send email
+            const mailOptions = {
+                from: nodemailer_user,
+                to: email,
+                subject: "Reset your password for Melody Music",
+                text: `Follow the link ${link} to reset your password.`,
+            };
+            transporter.sendMail(mailOptions, async (error, info) => {
+                if (error) {
+                    return res.status(500).json({message: error});
+                }
+                // console.log(`OTP: ${otp} sent successfully for email: ${email}`);
+                res.status(200).json({message: `Email sent successfully`});
+            });
+        }
+        catch(error){
+            res.status(400).json({message: 'Error sending mail'});
+        }
+    }
+)
 module.exports= router;

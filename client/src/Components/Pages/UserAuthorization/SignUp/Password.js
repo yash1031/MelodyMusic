@@ -5,7 +5,7 @@ import {
   } from "react-router-dom";
 import {toast } from 'react-toastify';
 
-const Password = () =>{
+const Password = ({type}) =>{
   
   const navigate= useNavigate();
   const context= useContext(UserContext);
@@ -109,8 +109,9 @@ const Password = () =>{
 
   return (
     <>
-      <h2>Create a password</h2>
-      <h2>Password</h2>
+      <h1>{type==="accountCreation"?'Create a password':'Create new password'}</h1>
+      {type==="resetPassword" &&(<h5>Please enter your new password below for your Spotify account.</h5> )}
+      <h3>Password</h3>
       <div id="passwords">
         <div className="form-group my-3">
           <div className="input-group" id="show_hide_password" onFocus={(e) => handlePwdOnFocus(e, "show_hide_password")} onBlur={(e) => handlePwdOnBlur(e, "show_hide_password")}
