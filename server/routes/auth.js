@@ -143,7 +143,8 @@ router.post('/login-user',
 
             else{
                 //Email entered by the user should exit in database
-                user = await User.findOne({ email });
+                if(req.body._id!='') user = await User.findOne({ _id: req.body._id });
+                else user = await User.findOne({ email });
                 if (!user) {
                     console.log("Error1")
                     return res.status(400).json({message: "User not found.",});
@@ -219,7 +220,7 @@ router.post('/send-email',[],
             if(!user){
                 return res.status(400).json({message: "User does not exist"});
             }  
-            const link= `http://localhost:3000/password-reset?user_id=${user}`;
+            const link= `http://localhost:3000/password-reset?user_id=${user._id}`;
             // Send email
             const mailOptions = {
                 from: nodemailer_user,
@@ -237,6 +238,31 @@ router.post('/send-email',[],
         }
         catch(error){
             res.status(400).json({message: 'Error sending mail'});
+        }
+    }
+)
+
+router.post('/password-reset',[],
+    async(req, res)=>{
+        try{
+            const user_id= req.body.user_id;
+            const password= req.body.password;
+            let user= await User.findOne({_id: user_id});
+            console.log(user);
+            if(!user){
+                return res.status(400).json({message: "User does not exist"});
+            }  
+            // Create a salt and add Salt added Hash out of the entered Password
+            const salt = await bcrypt.genSalt(10);
+            const secPass = await bcrypt.hash(password, salt);
+            user= await User.updateOne({_id: user_id}, {password: secPass});
+            console.log("Password updated. Updated user is: ", user);
+            res.status(200).json({message: user});
+
+        }
+        catch(error){
+            console.log("error is: "+ error);
+            res.status(400).json({message: 'Error resetting password'});
         }
     }
 )

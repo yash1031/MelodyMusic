@@ -37,19 +37,20 @@ const UserState= (props)=>{
     }
   }
 
-  const loginUser= async ({mobile='', loggingEmail='', loggingPassword='', authPlatform}) =>{
-    console.log("In UserState: ", mobile, loggingEmail, loggingPassword, authPlatform);
+  const loginUser= async ({_id='', mobile='', loggingEmail='', loggingPassword='', authPlatform}) =>{
+    console.log("In UserState: ", _id, mobile, loggingEmail, loggingPassword, authPlatform);
     try{
       const response= await fetch(`${host}/api/auth/login-user`,{
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({mobile, loggingEmail, loggingPassword, authPlatform}),
+        body: JSON.stringify({_id, mobile, loggingEmail, loggingPassword, authPlatform}),
       });
       const json = await response.json();
       if (response.status === 200) {
           localStorage.setItem('token', json.message);
+          console.log("Successfully logged in user");
           return [true, json.message];
       }
       else{
@@ -99,7 +100,7 @@ const UserState= (props)=>{
       })
       const json= await response.json();
       if(response.status=== 200){
-        console.log("Success in password reset: "+ json.message);
+        console.log("Success in sending password recovery email: "+ json.message);
         return [true, json.message];
       }
       else{
@@ -113,8 +114,34 @@ const UserState= (props)=>{
     }
   }
 
+  const passwordReset= async ({user_id, password})=>{
+    console.log("user_id recieved: ", user_id, "password recieved: ", password);
+    try{
+      const response= await fetch(`${host}/api/auth/password-reset`,{
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({user_id, password}),
+      })
+      const json= await response.json();
+      if(response.status=== 200){
+        console.log("Success in password reset: ", json.message);
+        return [true, json.message];
+      }
+      else{
+        console.log("Failure1: ", json.message);
+        return [false, json.message];
+      }
+    }
+    catch(error){
+      console.log("Failure2: ", error);
+      return [false, error];
+    }
+  }
+
   return (
-    <UserContext.Provider value={{sendEmailWithLink, fullPhone, setFullPhone, mobileExist, loginUser, email, setEmail, password, setPassword, name, setName, dob, setDob, gender, setGender, createUser}}>
+    <UserContext.Provider value={{passwordReset, sendEmailWithLink, fullPhone, setFullPhone, mobileExist, loginUser, email, setEmail, password, setPassword, name, setName, dob, setDob, gender, setGender, createUser}}>
       {props.children}
     </UserContext.Provider>
   )

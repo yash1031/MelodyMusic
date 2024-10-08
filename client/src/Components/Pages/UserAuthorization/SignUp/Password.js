@@ -9,10 +9,12 @@ const Password = ({type}) =>{
   
   const navigate= useNavigate();
   const context= useContext(UserContext);
-  const {password, setPassword}= context;
+  const {email, password, setPassword, passwordReset, loginUser}= context;
   const [cpassword, setCpassword]= useState("");
+  const location = useLocation();
 
-  const handleNext= () =>{
+  const handleNext= async (e) =>{
+    e.preventDefault();
     if(password === ""){
       document.getElementById("passwordRequired").style.display = "block";
       return;
@@ -30,10 +32,25 @@ const Password = ({type}) =>{
 
     const queryString = window.location.search; // Returns the query string part of the URL including the "?"
     const urlParams = new URLSearchParams(queryString);
+
     // Accessing query parameters
-    const authPlatform = urlParams.get('authPlatform'); // "123"
-    console.log("authPlatform is: "+ authPlatform)
-    navigate(`?authPlatform=${authPlatform}#step2`); // Programmatically change the URL to append #step1
+    if(location.pathname==='sign-up'){
+      const authPlatform = urlParams.get('authPlatform'); // "123"
+      console.log("authPlatform is: "+ authPlatform)
+      navigate(`?authPlatform=${authPlatform}#step2`); // Programmatically change the URL to append #step1
+    } 
+    else{
+        const user_id= urlParams.get('user_id');
+        const resetedPassword= await passwordReset({user_id, password});
+        if(resetedPassword[0]){
+          console.log("Password reseted successfully: ", resetedPassword[1]);
+          loginUser({_id: user_id, loggingPassword: password, authPlatform: "Melody Music"});
+          navigate('/');
+        }
+        else{
+          console.log("Error in password reset: ", resetedPassword[1]);
+        }
+    }
   }
 
   const handlePwdOnBlur = (e, showHideElementID) => {
@@ -154,7 +171,7 @@ const Password = ({type}) =>{
           <li>10 characters</li>
         </ul>
       </div>
-      <button onClick={handleNext}>Next</button>
+      <button onClick={e=> handleNext(e)}>Next</button>
     </>
   )
 }
