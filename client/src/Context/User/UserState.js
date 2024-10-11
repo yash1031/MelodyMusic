@@ -10,6 +10,8 @@ const UserState= (props)=>{
   const [dob, setDob]= useState('');
   const [gender, setGender]= useState('');
   const [fullPhone, setFullPhone]= useState('');
+  const [otpExpiryTimeout, setOtpExpiryTimeout]= useState(null);
+  const [otpStatusElement, setOtpStatusElement]= useState(`We've sent a 6-digit code to ${fullPhone}`)
 
   const createUser= async (authPlatform) =>{
     try{
@@ -27,12 +29,12 @@ const UserState= (props)=>{
           return [true, json.message];
       }
       else{
-        console.log("Failure1: "+ json.message)
+        console.log("Failure1: ", json.message)
           return [false, json.message];
       }
     }
     catch(error){
-      // console.log("Failure2: "+ error);
+      console.log("Failure2: ", error);
       return [false, error];
     }
   }
@@ -54,12 +56,12 @@ const UserState= (props)=>{
           return [true, json.message];
       }
       else{
-        console.log("Failure1: "+ json.message)
+        console.log("Failure1 ", json.message)
           return [false, json.message];
       }
     }
     catch(error){
-      console.log("Failure2: "+ error);
+      console.log("Failure2 ", error);
       return [false, error];
     }
   }
@@ -140,8 +142,71 @@ const UserState= (props)=>{
     }
   }
 
+  const requestOtp= async ({mobile})=> {
+    console.log( "mobile is: ", mobile);
+    try{
+      const response= await fetch(`${host}/api/auth/request-otp`,{
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({mobile}),
+      })
+      const json= await response.json();
+      if(response.status=== 200){
+        console.log("Success in requesting OTP: ", json.message);
+        return [true, json.message];
+      }
+      else{
+        console.log("Failure1: ", json.message);
+        return [false, json.message];
+      }
+    }
+    catch(error){
+      console.log("Failure2: ", error);
+      return [false, error];
+    }
+  }
+
+  const deleteOtp= async ({mobile})=>{
+    try{
+      const response = await fetch( `${host}/api/auth/delete-otp`,{
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ mobile }), // body data type must match "Content-Type" header
+        }
+      );
+      const json = await response.json();
+      if(response.status=== 200) return [true, json.message]
+      else return [false, json.message];
+    }
+    catch(error){
+      return [false, error];
+    }
+  }
+ 
+  const verifyOtp= async ({mobile, otp})=>{
+    try{
+      const response = await fetch(`${host}/api/auth/verify-otp`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ mobile, otp }), // body data type must match "Content-Type" header
+      });
+      const json = await response.json();
+      if(response.status=== 200) return [true, json.message]
+      else return [false, json.message];
+    }
+    catch(error){
+      return [false, error];
+    }
+  }
+
   return (
-    <UserContext.Provider value={{passwordReset, sendEmailWithLink, fullPhone, setFullPhone, mobileExist, loginUser, email, setEmail, password, setPassword, name, setName, dob, setDob, gender, setGender, createUser}}>
+    <UserContext.Provider value={{otpStatusElement, setOtpStatusElement, otpExpiryTimeout, setOtpExpiryTimeout, deleteOtp, verifyOtp, requestOtp, passwordReset, sendEmailWithLink, fullPhone, setFullPhone, mobileExist, loginUser, email, setEmail, password, setPassword, name, setName, dob, setDob, gender, setGender, createUser}}>
       {props.children}
     </UserContext.Provider>
   )

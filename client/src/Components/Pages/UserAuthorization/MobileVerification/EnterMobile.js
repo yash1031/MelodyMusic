@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { auth, RecaptchaVerifier, signInWithPhoneNumber, connectAuthEmulator } from '../SignUp/SignUpWithGoogle/firebase';
 import UserContext from '../../../../Context/User/UserContext';
 
@@ -7,10 +7,10 @@ const EnterMobile = () => {
   const [currentCountryCode, setCurrentCountryCode]= useState('+91');
   const countryCodes= ["+20","+27","+51","+52","+54","+55","+56","+57","+62","+66","+84","+91","+212","+213","+233","+234","+254","+255","+256","+593","+852","+966","+971"]  
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [confirmationResult, setConfirmationResult] = useState(null);
   const navigate= useNavigate();
+  const location= useLocation();
   const context= useContext(UserContext);
-  const {fullPhone, setFullPhone, mobileExist}= context;
+  const {otpStatusElement, setOtpStatusElement, otpExpiryTimeout, setOtpExpiryTimeout, fullPhone, setFullPhone, mobileExist,requestOtp, deleteOtp}= context;
 
   document.addEventListener('click', (e)=>{
     // console.log("Background Clicked")
@@ -38,41 +38,46 @@ const EnterMobile = () => {
     const queryString = window.location.search; // Returns the query string part of the URL including the "?"
     const urlParams = new URLSearchParams(queryString);
     // Accessing query parameters
-    const authPlatform = urlParams.get('authPlatform'); // "123"
-    console.log("authPlatform is: "+ authPlatform)
-    const flow = urlParams.get('flow'); // "123"
-    console.log("flow is: "+ flow)
+    const authPlatform = urlParams.get('authPlatform'); 
+    const flow = urlParams.get('flow'); 
 
     if(flow=="logIn"){
+      console.log("fullPhone", fullPhone)
       const mobileExisted= await mobileExist(fullPhone);
       if(!mobileExisted[0]){
         alert(mobileExisted[1]);
-        return;
+        return; 
       }
-      
     }
-    // console.log('Auth is:', auth);
-    // // connectAuthEmulator(auth, 'http://localhost:3000');
+    const requestedOTP= await requestOtp({mobile: fullPhone});
 
-    // if (!window.recaptchaVerifier){
-    //     window.recaptchaVerifier = new RecaptchaVerifier(auth, 'sendOTP', {
-    //       size: 'invisible'
-    //     });
-    // }
-    // // window.recaptchaVerifier.clear();
-    // console.log('recaptchaVerifier is: ', window.recaptchaVerifier)
-    // const appVerifier = window.recaptchaVerifier;
+    if(requestedOTP[0]){
+      console.log("Success requesting OTP: ", requestedOTP[1]);
+      setOtpStatusElement(`We've sent a 6-digit code to ${fullPhone}`)
+       //If it's not the first time Validation button is clicked, time to Expire OTP will move forward, need to cancel execution of previous setTimeout function
+      if (otpExpiryTimeout !== null) {
+        clearTimeout(otpExpiryTimeout);
+      }
+      setOtpExpiryTimeout(
+        //Delete the record from database after 1 min.
+        setTimeout(async (e) => {
+                // Once OTPs are expired, all OTP records for that user to be deleted from DB
+                const deletedOtp= await deleteOtp({mobile: fullPhone});
+                if(deletedOtp[0]){
+                    // console.log("Result for record deletion: " + deletedOtp[1]);
+                    setOtpStatusElement('OTP Expired. Please request for a new one');
+                }
+                else{
+                    // console.log("Error in deletion is: " + deletedOtp[1]);
+                }
+        }, 60000)
+      )
+      if(location.pathname !== 'enter-otp') navigate(`/enter-otp?authPlatform=${authPlatform}&flow=${flow}`);
+    }
+    else{
+      console.log("Error in requesting OTP: ", requestedOTP[1]);
+    }
 
-    // signInWithPhoneNumber(auth, fullPhone, appVerifier)
-    //   .then((result) => {
-    //     setConfirmationResult(result);
-    //     alert('OTP has been sent to your phone.');
-    //   })
-    //   .catch((error) => {
-    //     console.log('Error sending OTP:', error.message);
-    //     alert(error.message);
-    //   });
-    navigate(`/enter-otp?authPlatform=${authPlatform}&confirmationResult=${confirmationResult}&flow=${flow}`);
   }
 
   const inputPhone= (e)=>{
@@ -97,7 +102,6 @@ const EnterMobile = () => {
         <input type="text" placeholder='Phone number' onChange={e=> inputPhone(e)} value={phoneNumber} style={{flex: "1", background: "black", border: "1px solid gray", borderRadius: "3px", height: "40px", padding: "0 10px", color: "white"}}/>
       </section>
       <button id="sendOTP" onClick={(e)=>sendOtp(e)} style={{alignSelf: "flex-start", border: "none", height: "50px", padding: "0 35px", borderRadius: "25px", color: "white", backgroundColor: "rgb(59 198 59 / 96%)"}}>Next</button>
-      <div id="recaptcha"></div>
     </div>
   ) 
 }

@@ -11,7 +11,8 @@ const UserSchema = new Schema({
     email: {
         //somehow adjust either email is null or it is unique
         type: String,
-        // email: true
+        sparse: true,  // Ensures that `null` or missing values are allowed
+        unique: false,  // Enforces uniqueness for non-null and non-empty values
     },
     mobile:{
         type: String,
@@ -38,6 +39,8 @@ const UserSchema = new Schema({
         default: Date.now
     },
 });
+
+UserSchema.index({ email: 1 }, { unique: true, partialFilterExpression: { email: { $exists: true, $ne: null } } });
 
 module.exports = mongoose.model('users', UserSchema);  // Creating Model from schema and exporting it, arguments are (collectionName in DB , Schema name )
 

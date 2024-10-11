@@ -57,14 +57,14 @@ const Navbar = () => {
         </Link>
         <span onClick={handleSignOut} style={{ display: "flex", alignItems:"center", justifyContent: "center", fontWeight: "bold", borderRadius: "50%", height: "60%", aspectRatio: "1", backgroundColor: "purple"}}>Y</span>
       </span>):
-      (<span id="right-section1" style={{float: "right", height: "100%"}}>
+      (<><span id="right-section1" style={{float: "right", height: "100%"}}>
         <Link to='/sign-up'>
           <button className="btn" style={{fontWeight: "bold", color: "rgb(137 139 136 / 60%)"}}>Sign up</button>
         </Link>
         <Link to='/log-in'>
           <button className="btn" style={{fontWeight: "bold", color: "black", padding: "0 40px", backgroundColor:"white", borderRadius: "25px", height: "100%"}}>Log in</button>
         </Link>
-      </span>) }
+      </span></>) }
       
       {/*  */}
     </div>
