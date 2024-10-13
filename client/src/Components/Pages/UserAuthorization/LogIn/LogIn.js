@@ -2,7 +2,7 @@ import React, {useContext} from 'react'
 import {
     Link, useNavigate,
   } from "react-router-dom";
-import { auth, provider, signInWithPopup } from '../SignUp/SignUpWithGoogle/firebase';
+import { auth, providerGoogle, signInWithPopup } from '../SignUp/SignUpWithGoogle/firebase';
 import UserContext from '../../../../Context/User/UserContext';
 
 const LogIn = () => {
@@ -32,7 +32,7 @@ const LogIn = () => {
 
     const logInWithGoogle=  ()=>{
         let success= false;
-        signInWithPopup(auth, provider)
+        signInWithPopup(auth, providerGoogle)
           .then(async (result) => {
             console.log("result: ", result)
             // await setEmail(email=> email= result.user.email);
