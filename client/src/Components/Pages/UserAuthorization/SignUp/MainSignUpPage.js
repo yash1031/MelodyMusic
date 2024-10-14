@@ -4,77 +4,12 @@ import {
     Link, useLocation, useNavigate, Outlet
   } from "react-router-dom";
 import { auth, providerGoogle, providerFacebook, FacebookAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, signOut} from './SignUpWithGoogle/firebase';
-import {onAuthStateChanged, setPersistence, browserLocalPersistence} from 'firebase/auth';
 import {toast } from 'react-toastify';
 
 const MainSignUpPage = () => {
     const context= useContext(UserContext);
-    const [auth1, setAuth1]= useState('Hello');
-    const [auth2, setAuth2]= useState('');
     const {email, setEmail, setName}= context;
-    const [authReady, setAuthReady] = useState(false);  // Track when auth is initialized
     const navigate= useNavigate();
-    // console.log(host);
-  
-    // useEffect(() => {
-    //   setPersistence(auth, browserLocalPersistence)
-    //     .then(() => {
-    //       console.log("Persistence set to LOCAL");
-    //     })
-    //     .catch((error) => {
-    //       console.error("Error setting persistence: ", error);
-    //     });
-    // }, [auth]);
-
-    // // Wait for Firebase to initialize auth state before calling getRedirectResult
-    // useEffect(() => {
-    //   const unsubscribe = onAuthStateChanged(auth, (user) => {
-    //     console.log("User from onAuthStateChanged: ", user);
-    //     if(user) {
-    //       console.log("User is already signed in:", user);
-    //     }
-    //     setAuthReady(true);  // Firebase auth is initialized
-    //     unsubscribe(); // Clean up listener after it's triggered
-    //   });
-    // }, [auth]);
-
-    // useEffect(()=>{
-    //   console.log(authReady);
-    //   if (!authReady) return;  // Wait until auth is ready  
-    //   console.log("auth1 ", auth1);
-    //   console.log("auth2 ", auth);
-    //   getRedirectResult(auth)
-    //   .then((result) => {
-    //     console.log("result is ", result);
-    //     if(result){
-    //       // This gives you a Facebook Access Token. You can use it to access the Facebook API.
-    //       const credential = FacebookAuthProvider.credentialFromResult(result);
-    //       const token = credential.accessToken;
-
-    //       const user = result.user;
-    //       console.log("user", user);
-    //       console.log("token", token);
-    //       const authPlatform= 'Facebook'
-    //       navigate(`?authPlatform=${authPlatform}#step2`);
-    //     }
-    //     // IdP data available using getAdditionalUserInfo(result)
-    //     // ...
-    //   }).catch((error) => {
-    //     // Handle Errors here.
-    //     const errorCode = error.code;
-    //     const errorMessage = error.message;
-    //     // The email of the user's account used.
-    //     // const email = error.customData.email;
-    //     // AuthCredential type that was used.
-    //     const credential = FacebookAuthProvider.credentialFromError(error);
-    //     console.log("errorCode: ", errorCode);
-    //     console.log("errorMessage: ", errorMessage);
-    //     // console.log("email: ", email);
-    //     console.log("credential: ", credential);
-    //     console.log(error)        
-    //     // ...
-    //   });
-    // }, [authReady, auth]);
 
     const signUpWithFacebook=  (e)=>{
       e.preventDefault();
@@ -87,37 +22,16 @@ const MainSignUpPage = () => {
           navigate(`?authPlatform=${authPlatform}#step2`);
         })
         .catch((error) => {
-              // Handle Errors here.
           const errorCode = error.code;
           const errorMessage = error.message;
-          // The email of the user's account used.
           const email = error.customData.email;
-          // The AuthCredential type that was used.
           const credential = FacebookAuthProvider.credentialFromError(error);
           console.log("errorCode: ", errorCode);
           console.log("errorMessage: ", errorMessage);
           console.log("email: ", email);
           console.log("credential: ", credential);
           console.log(error)
-        
-        });
-      // setAuth1(auth);
-      // signInWithRedirect(auth, providerFacebook);
-      // console.log("Hello2");
-      // console.log("auth1", auth);
-      
-    }
-    const signUpWithApple=  ()=>{
-      // signInWithPopup(auth, provider)
-      //   .then(async (result) => {
-      //     const authPlatform= "Apple";
-      //     setEmail(result.user.email)
-      //     setName(result.user.displayName)
-      //     navigate(`?authPlatform=${authPlatform}#step2`);
-      //   })
-      //   .catch((error) => {
-      //     console.error("Error during sign-in: ", error);
-      //   });
+        });      
     }
     
 
@@ -181,9 +95,6 @@ const MainSignUpPage = () => {
             </button>
             <button onClick={e=> signUpWithFacebook(e)} style={{display: "block", border: "1px solid gray", height: "50px", borderRadius: "25px", width: "100%",color: "white", backgroundColor: "black"}}>
               Sign up with Facebook
-            </button>
-            <button onClick={signUpWithApple} style={{display: "block", border: "1px solid gray", height: "50px", borderRadius: "25px", width: "100%",color: "white", backgroundColor: "black"}}>
-              Sign up with Apple
             </button>
           </section>
           <hr />
