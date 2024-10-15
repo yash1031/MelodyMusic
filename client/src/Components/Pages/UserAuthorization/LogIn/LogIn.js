@@ -2,7 +2,7 @@ import React, {useContext} from 'react'
 import {
     Link, useNavigate,
   } from "react-router-dom";
-import { auth, providerGoogle, signInWithPopup } from '../SignUp/SignUpWithGoogle/firebase';
+import { auth, providerGoogle, providerFacebook, signInWithPopup } from '../SignUp/SignUpWithGoogle/firebase';
 import UserContext from '../../../../Context/User/UserContext';
 
 const LogIn = () => {
@@ -30,13 +30,13 @@ const LogIn = () => {
         else setPassword(e.target.value);
     }
 
-    const logInWithGoogle=  ()=>{
-        let success= false;
+    const logInWithGoogle= (e)=>{
+        e.preventDefault();
         signInWithPopup(auth, providerGoogle)
           .then(async (result) => {
             console.log("result: ", result)
-            // await setEmail(email=> email= result.user.email);
             const authPlatform= "Google";
+            console.log("Google User", result.user);
             const loggedinUser= await loginUser({loggingEmail: result.user.email, authPlatform});
             if(loggedinUser[0]){
                 console.log("Successfully loggedin User: "+ loggedinUser[1]);
@@ -53,6 +53,28 @@ const LogIn = () => {
           });
       }
 
+    const logInWithFacebook= (e)=>{
+        e.preventDefault();
+        signInWithPopup(auth, providerFacebook)
+          .then(async (result) => {
+            const authPlatform= "Facebook";
+            console.log("Facebook User", result.user);
+            const loggedinUser= await loginUser({loggingEmail: result.user.email, authPlatform});
+            if(loggedinUser[0]){
+                console.log("Successfully loggedin User: "+ loggedinUser[1]);
+                navigate('/');
+            }
+            else{
+                alert(loggedinUser[1]);
+                console.log("Error in loggingIn User: "+ loggedinUser[1]);
+            }
+          })
+          .catch((error) => {
+            alert(error.message);
+            console.error("Error during sign-in: ", error);
+          });
+    }
+
   return (
     <>
         <div style={{width: "50vw", background: "#898b881f", margin: "40px auto", padding: "50px 0", borderRadius: "7px"}}>
@@ -60,8 +82,8 @@ const LogIn = () => {
                 <i className="fa-solid fa-music fa-2xl" style={{fontWeight: "bold", display: "block", color: "white", margin: "auto"}}></i>
                 <h1 style={{fontWeight: "bold", textAlign: "center", margin: "0 20px"}}>Log in to Melody Music</h1>
                 <section style={{display: "flex", flexDirection: "column", gap: "5px"}}>
-                <button onClick={logInWithGoogle} style={{display: "block", border: "1px solid gray", height: "50px", borderRadius: "25px", width: "100%",color: "white", backgroundColor: "#898b881f"}}>Continue with Google</button>
-                <button style={{display: "block", border: "1px solid gray", height: "50px", borderRadius: "25px", width: "100%",color: "white", backgroundColor: "#898b881f"}}>Continue with Facebook</button>
+                <button onClick={e=> logInWithGoogle(e)} style={{display: "block", border: "1px solid gray", height: "50px", borderRadius: "25px", width: "100%",color: "white", backgroundColor: "#898b881f"}}>Continue with Google</button>
+                <button onClick={e=> logInWithFacebook(e)} style={{display: "block", border: "1px solid gray", height: "50px", borderRadius: "25px", width: "100%",color: "white", backgroundColor: "#898b881f"}}>Continue with Facebook</button>
                 <Link to="/enter-mobile?authPlatform=Mobile&flow=logIn" style={{textDecoration: "none"}}><button style={{display: "block", border: "1px solid gray", height: "50px", borderRadius: "25px", width: "100%",color: "white", backgroundColor: "#898b881f"}}>Continue with phone number</button></Link>
                 </section>
                 <hr />

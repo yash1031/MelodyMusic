@@ -3,8 +3,7 @@ import UserContext from '../../../../Context/User/UserContext';
 import {
     Link, useLocation, useNavigate, Outlet
   } from "react-router-dom";
-import { auth, providerGoogle, providerFacebook, FacebookAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, signOut} from './SignUpWithGoogle/firebase';
-import {toast } from 'react-toastify';
+import { auth, providerGoogle, providerFacebook, FacebookAuthProvider, signInWithPopup, signOut} from './SignUpWithGoogle/firebase';
 
 const MainSignUpPage = () => {
     const context= useContext(UserContext);
@@ -16,7 +15,7 @@ const MainSignUpPage = () => {
       signInWithPopup(auth, providerFacebook)
         .then(async (result) => {
           const authPlatform= "Facebook";
-          console.log("Facebook User", result);
+          console.log("Facebook User", result.user);
           setEmail(result.user.email)
           setName(result.user.displayName)
           navigate(`?authPlatform=${authPlatform}#step2`);
@@ -35,7 +34,8 @@ const MainSignUpPage = () => {
     }
     
 
-    const signUpWithGoogle=  ()=>{
+    const signUpWithGoogle=  (e)=>{
+      e.preventDefault();
       signInWithPopup(auth, providerGoogle)
         .then(async (result) => {
           const authPlatform= "Google";
@@ -90,10 +90,10 @@ const MainSignUpPage = () => {
           <button onClick={handleNext} id="nextToEmail" style={{display: "block",border: "none", height: "50px", borderRadius: "25px", width: "100%", backgroundColor: "rgb(59 198 59 / 96%)"}}>
           Next</button>
             <section style={{display: "flex", flexDirection: "column", gap: "5px"}}>
-            <button onClick={signUpWithGoogle} style={{display: "block", border: "1px solid gray", height: "50px", borderRadius: "25px", width: "100%",color: "white", backgroundColor: "black"}}>
+            <button onClick={e=> signUpWithGoogle (e)} style={{display: "block", border: "1px solid gray", height: "50px", borderRadius: "25px", width: "100%",color: "white", backgroundColor: "black"}}>
               Sign up with Google
             </button>
-            <button onClick={e=> signUpWithFacebook(e)} style={{display: "block", border: "1px solid gray", height: "50px", borderRadius: "25px", width: "100%",color: "white", backgroundColor: "black"}}>
+            <button onClick={e=> signUpWithFacebook (e)} style={{display: "block", border: "1px solid gray", height: "50px", borderRadius: "25px", width: "100%",color: "white", backgroundColor: "black"}}>
               Sign up with Facebook
             </button>
           </section>
