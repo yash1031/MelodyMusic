@@ -27,3 +27,4 @@ app.use('/api/auth', require('./routes/auth'));
 app.listen(port, async () => {
     console.log(`melodyMusic backend listening on port ${port}`);
   })
+
