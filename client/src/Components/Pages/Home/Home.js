@@ -7,7 +7,7 @@ import './Home.css'
 import WebPlaybackComponent from './WebPlaybackComponent/WebPlaybackComponent'
 
 const Home = () => {
-    const token= localStorage.getItem('token')
+  const token= 'BQAJkmwGxPHhOvqCqY9H1R42eldyx82EQGvn2tQUxHZMMGhOrcBRlC0N90ZKVjfY6aGMavyjVjfWa625xWFmF6lgzEfNDZ-oUZPTDV_0Bn_j05wetDSg1AltKhZRHvPpnfMGj3S_Wk1N8xWIFTwPrBG4rfwOy36UMb68GcN9ELDTQXBxQJK8NTItPdGOiSKby7Gi_wxHTGzA_DWnSSvIqaZJ7y9z6o2GQ6BXchl9';
 
   return (
     <div id="home">
@@ -24,7 +24,7 @@ const Home = () => {
         </div>
 
         <div id="webPlaybackComp">
-            <WebPlaybackComponent></WebPlaybackComponent>
+            <WebPlaybackComponent token={token}></WebPlaybackComponent>
         </div>
         {/* <div id="signUpFooter">
             <SignUpFooter></SignUpFooter>

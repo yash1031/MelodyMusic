@@ -1,56 +1,49 @@
 import React, { useState, useEffect } from 'react'
 
-const WebPlaybackComponent = () => {
+const WebPlaybackComponent = (props) => {
 
   const [player, setPlayer] = useState(undefined);
-  const accessToken= process.env.REACT_APP_accessToken
 
-  useEffect= (()=>{
-    //Setting up onSpotifyWebPlaybackSDKReady
+  useEffect(() => {
+
+    const script = document.createElement("script");
+    script.src = "https://sdk.scdn.co/spotify-player.js";
+    script.async = true;
+
+    document.body.appendChild(script);
+
     window.onSpotifyWebPlaybackSDKReady = () => {
-        const token = accessToken;
+        console.log("In spotifyWebPlaybackSDKReady");
+        // console.log(accessToken);
         const player = new window.Spotify.Player({
             name: 'Web Playback SDK Quick Start Player',
-            getOAuthToken: cb => { cb(token); },
+            getOAuthToken: cb => { cb(props.token); },
             volume: 0.5
         });
 
         setPlayer(player);
-    
-        // Ready
+
         player.addListener('ready', ({ device_id }) => {
             console.log('Ready with Device ID', device_id);
         });
-    
-        // Not Ready
+
         player.addListener('not_ready', ({ device_id }) => {
             console.log('Device ID has gone offline', device_id);
         });
-    
-        player.addListener('initialization_error', ({ message }) => {
-            console.error(message);
-        });
-    
-        player.addListener('authentication_error', ({ message }) => {
-            console.error(message);
-        });
-    
-        player.addListener('account_error', ({ message }) => {
-            console.error(message);
-        });
-    
-        document.getElementById('togglePlay').onclick = function() {
-        player.togglePlay();
-        };
-    
+
         player.connect();
-    }
-  }, []);
+
+    };
+}, []);
 
   return (
-    <div>
-      <button id="togglePlay">Toggle Play</button>
-    </div>
+    <>
+        <div className="container">
+           <div className="main-wrapper">
+                This is the WebPlaybackComponent
+            </div>
+        </div>
+      </>
   )
 }
 

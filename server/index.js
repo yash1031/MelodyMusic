@@ -12,16 +12,51 @@ const startApp = async ()  => {
     console.error('Failed to connect to DB:', error);
   }
 };
+
+var generateRandomString = function (length) {
+  var text = '';
+  var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+  for (var i = 0; i < length; i++) {
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
+  return text;
+};
+
   
 startApp();
 const app = express();
 const port = process.env.REACT_APP_PORT; 
+const client_id = process.env.client_id; 
+
 
 app.use(express.json()); //middleware to send JSON data through requests 
 app.use(cors());
 
 //Available routes
 app.use('/api/auth', require('./routes/auth'));
+app.get('/auth/login', (req, res) => {
+  console.log(client_id)
+  var scope = "streaming \
+               user-read-email \
+               user-read-private"
+
+  var state = generateRandomString(16);
+
+  var auth_query_parameters = new URLSearchParams({
+    response_type: "code",
+    client_id: 'bbbc38b877044e2d83ce8c78d4956eeb',
+    scope: scope,
+    redirect_uri: "http://localhost:3000/auth/callback",
+    state: state
+  })
+
+  res.redirect('https://accounts.spotify.com/authorize/?' + auth_query_parameters.toString());
+});
+
+app.get('/auth/callback', (req, res) => {
+
+});
 
 //Meaning of the app running on the below port
 app.listen(port, async () => {
