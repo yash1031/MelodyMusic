@@ -16,6 +16,7 @@ import InstallApp from "./Components/MainScreen/InstallApp/InstallApp";
 import WhatsNew from "./Components/MainScreen/WhatsNew/WhatsNew";
 import AllContent from "./Components/MainScreen/AllContent/AllContent";
 import CreateNewPassword from "./Components/Pages/UserAuthorization/ForgotPassword/CreateNewPassword";
+import GenerateAccessToken from "./Components/GenerateAccessToken/GenerateAccessToken";
 
 const router = createBrowserRouter([
   {
@@ -68,6 +69,10 @@ const router = createBrowserRouter([
   {
     path: "/password-reset",
     element: <CreateNewPassword/>,
+  },
+  {
+    path: "/auth/callback",
+    element: <GenerateAccessToken/>,
   }
 ]);
 

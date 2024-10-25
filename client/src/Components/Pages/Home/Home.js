@@ -7,7 +7,7 @@ import './Home.css'
 import WebPlaybackComponent from './WebPlaybackComponent/WebPlaybackComponent'
 
 const Home = () => {
-  const token= 'BQAJkmwGxPHhOvqCqY9H1R42eldyx82EQGvn2tQUxHZMMGhOrcBRlC0N90ZKVjfY6aGMavyjVjfWa625xWFmF6lgzEfNDZ-oUZPTDV_0Bn_j05wetDSg1AltKhZRHvPpnfMGj3S_Wk1N8xWIFTwPrBG4rfwOy36UMb68GcN9ELDTQXBxQJK8NTItPdGOiSKby7Gi_wxHTGzA_DWnSSvIqaZJ7y9z6o2GQ6BXchl9';
+  const token= 'BQAsDREK27O6LakbeMPzGOEGCBQ9asghV70a7AMkXumTRMVPyC1aav9GpnmAmltlpfRErBHVWca_1QRYvG9yPBF6NUFXZVPQPt3Ra-_boKF_Rhr7DYL11E1s6xMPSHBLeJZZmIxn7egM-BdXrL-ugFDUsg5i1Xo0MerEq6XY0KAEVqCqvl12TXnLgc2N8S4OTvY4SX4LwsN-9mpYKg9RsGJh4v3SIy6ft2VbCIL7';
 
   return (
     <div id="home">
