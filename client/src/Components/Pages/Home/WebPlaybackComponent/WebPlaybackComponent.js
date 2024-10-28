@@ -84,16 +84,75 @@ const pauseTrack = async (deviceId) => {
     }
 }  
 
-  const togglePlay = () => {
-    is_paused? playTrack(deviceId, props.token, 'spotify:track:7ynyU7I8T6aWEaKIOrKTxE'): pauseTrack(deviceId); // Example track ID
-  };
+  // const togglePlay = () => {
+  //   is_paused? playTrack(deviceId, props.token, 'spotify:track:7ynyU7I8T6aWEaKIOrKTxE'): pauseTrack(deviceId); // Example track ID
+  // };
 
   return (
     <>
-        <div className="container">
-           <div className="main-wrapper">
-           <button onClick={togglePlay}>{is_paused? "Play Track": "Pause Track"}</button>
-            </div>
+        <div className="container" style={{border: "2px solid red", width: "100vw", display: 'flex', flexDirection: 'row'}}>
+              <div id="trackDetails"  style={{border: "2px solid green", width: "25%", display: 'flex', flexDirection: 'row', float: 'left'}}>
+                <div id="trackImage">
+                  Image
+                </div>
+                <div id="track_TitleArtists" style={{display: 'flex', flexDirection: 'column'}}>
+                  <div id="title">
+                      This is title
+                  </div>
+                  <div id="artists">
+                    Artist1, Artist2
+                  </div>
+                </div> 
+                <div id="addToFavourites">
+                <i class="fa-solid fa-circle-plus"></i>
+                </div>
+              </div>
+              <div id="trackControls" style={{border: "2px solid yellow", width: "50%", display: 'flex', flexDirection: 'column'}}>
+                  <div id="mainControls" style={{display: 'flex', flexDirection: 'row', justifyContent: "center", justifyContent: "space-between"}}>
+                    <div id="shuffle">
+                      <i class="fa-solid fa-shuffle"/>
+                    </div>
+                    <div id="prevTrack">
+                      <i class="fa-solid fa-backward-step"></i>
+                    </div>
+                    <div id="togglePlay">
+                      {is_paused? <i onClick={playTrack(deviceId, props.token, 'spotify:track:7ynyU7I8T6aWEaKIOrKTxE')} class="fa-solid fa-circle-play"/>: <i onClick={pauseTrack(deviceId)} class="fa-solid fa-circle-pause"/>}
+                    </div>
+                    <div id="nextTrack">
+                      <i class="fa-solid fa-forward-step"></i>
+                    </div>
+                    <div id="repeat">
+                      <i class="fa-solid fa-repeat"></i>
+                    </div>
+                  </div>
+                  <div id="progressBar">
+                    This is Progress Bar
+                  </div>
+              </div> 
+              <div id="extraTrackControls" style={{border: "2px solid purple", width: "25%", display: 'flex', flexDirection: 'row', float: 'right'}}>
+                <div id="nowPlayingView">
+                  <i style={{}} class="fa-solid fa-play"></i>
+                </div>
+                <div id="lyrics">
+
+                </div>
+                <div id="showQueue">
+
+                </div>
+                <div id="controlMute">
+
+                </div>
+                <div id="controleVolume">
+
+                </div>
+                <div id="openMiniPlayer">
+
+                </div>
+                <div id="fullScreen">
+
+                </div>
+              </div>
+           {/* <button onClick={togglePlay}>{is_paused? "Play Track": "Pause Track"}</button> */}
         </div>
       </>
   )
