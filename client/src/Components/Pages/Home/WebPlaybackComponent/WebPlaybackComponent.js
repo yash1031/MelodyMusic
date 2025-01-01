@@ -1,4 +1,12 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
+import MusicContext from '../../../../Context/Music/MusicContext';
+import './WebPlaybackComponent.css'
+
+const CustomProgressBar = ({ progress }) => (
+  <div className="progress-bar">
+    <div className="progress-fill" style={{ width: `${progress}%` }}></div>
+  </div>
+);
 
 const WebPlaybackComponent = (props) => {
 
@@ -6,7 +14,14 @@ const WebPlaybackComponent = (props) => {
   const [is_paused, setPaused] = useState(true);
   const [is_active, setActive] = useState(false);
   const [deviceId, setDeviceId]= useState('');
-//   const [current_track, setTrack] = useState(track);
+  const [trackProgress, setTrackProgress]= useState('');
+  const context= useContext(MusicContext);
+  const {current_track, setTrack}= context;
+  const [track_Duration, setTrackDuration]= useState('');
+  const [track_Name, setTrackName]= useState('');
+  const [track_Artists, setTrackArtists]= useState([]);
+  const [album_Image, setAlbumImage]= useState('');
+  const clientCredential_accessToken= process.env.REACT_APP_clientCredential_accessToken;
 
   useEffect(() => {
 
@@ -17,11 +32,10 @@ const WebPlaybackComponent = (props) => {
     document.body.appendChild(script);
 
     window.onSpotifyWebPlaybackSDKReady = () => {
-        console.log("In spotifyWebPlaybackSDKReady");
-        // console.log(accessToken);
+        console.log("In spotifyWebPlaybackSDKReady, token is: ", props.player_access_token);
         const player = new window.Spotify.Player({
             name: 'Web Playback SDK Quick Start Player',
-            getOAuthToken: cb => { cb(props.token); },
+            getOAuthToken: cb => { cb(props.player_access_token); },
             volume: 0.5
         });
 
@@ -39,9 +53,47 @@ const WebPlaybackComponent = (props) => {
         player.connect();
 
     };
+
+
 }, []);
 
-const playTrack = async (deviceId, token, trackUri) => {
+  useEffect( ()=>{
+    const getTrackDetails= async ()=>{
+      try{
+        const response=  await fetch(`https://api.spotify.com/v1/tracks/7ynyU7I8T6aWEaKIOrKTxE`,{
+          method: "GET",
+          headers: {
+            'Authorization': `Bearer ${clientCredential_accessToken}`,
+          }
+        })
+        const json= await response.json();
+        if(response.status === 200){
+          setTrackDuration(json.duration_ms);
+          setTrackName(json.name);
+          setAlbumImage(json.album?.images[0]?.url)
+          let artists= [];
+          let duration= await json.duration_ms;
+          json.artists.map((artist)=>{
+            artists.push(artist);
+          })
+          setTrackArtists(artists);
+        }
+        else{
+          console.log("Error1 fetching track details", json.error)
+          // alert("Error1 fetching track details", json.error)
+        }
+      }
+      catch(error){
+        console.log("Error2 fetching track details", error)
+        // alert("Error2 fetching track details", error)
+      }
+    }
+    getTrackDetails();
+  }, [current_track])
+
+const playTrack = async (deviceId, trackUri) => {
+  console.log("props.player_access_token", props.player_access_token)
+  console.log("trackUri", trackUri)
     try {
       const response = await fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
         method: 'PUT',
@@ -50,17 +102,19 @@ const playTrack = async (deviceId, token, trackUri) => {
         }),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${props.token}`,
+          'Authorization': `Bearer ${props.player_access_token}`,
         },
       });
       if (response.status === 204) {
         setPaused(false);
         console.log('Track is playing!');
       } else {
-        console.error('Failed to play track');
+        console.error('Failed to play track', response.error);
+        alert('Failed to play track', response.error);
       }
     } catch (error) {
       console.error('Error playing track:', error);
+      alert('Error playing track:', error);
     }
   };  
 
@@ -70,7 +124,7 @@ const pauseTrack = async (deviceId) => {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${props.token}`,
+            'Authorization': `Bearer ${props.player_access_token}`,
           },
         });
         if (response.status === 204) {
@@ -84,10 +138,6 @@ const pauseTrack = async (deviceId) => {
     }
 }  
 
-  // const togglePlay = () => {
-  //   is_paused? playTrack(deviceId, props.token, 'spotify:track:7ynyU7I8T6aWEaKIOrKTxE'): pauseTrack(deviceId); // Example track ID
-  // };
-
   return (
     <>
         <div className="container" style={{border: "2px solid red", width: "100vw", display: 'flex', flexDirection: 'row'}}>
@@ -97,41 +147,47 @@ const pauseTrack = async (deviceId) => {
                 </div>
                 <div id="track_TitleArtists" style={{display: 'flex', flexDirection: 'column'}}>
                   <div id="title">
-                      This is title
+                      {track_Name}
                   </div>
                   <div id="artists">
                     Artist1, Artist2
                   </div>
                 </div> 
                 <div id="addToFavourites">
-                <i class="fa-solid fa-circle-plus"></i>
+                <i className="fa-solid fa-circle-plus"></i>
                 </div>
               </div>
               <div id="trackControls" style={{border: "2px solid yellow", width: "50%", display: 'flex', flexDirection: 'column'}}>
-                  <div id="mainControls" style={{display: 'flex', flexDirection: 'row', justifyContent: "center", justifyContent: "space-between"}}>
+                  <div id="mainControls" style={{padding: "", display: 'flex', flexDirection: 'row', justifyContent: "center", gap: "25px"}}>
                     <div id="shuffle">
-                      <i class="fa-solid fa-shuffle"/>
+                      <i className="fa-solid fa-shuffle"/>
                     </div>
                     <div id="prevTrack">
-                      <i class="fa-solid fa-backward-step"></i>
+                      <i className="fa-solid fa-backward-step"></i>
                     </div>
                     <div id="togglePlay">
-                      {is_paused? <i onClick={playTrack(deviceId, props.token, 'spotify:track:7ynyU7I8T6aWEaKIOrKTxE')} class="fa-solid fa-circle-play"/>: <i onClick={pauseTrack(deviceId)} class="fa-solid fa-circle-pause"/>}
+                      {is_paused? <i onClick={()=> playTrack(deviceId, `spotify:track:${current_track}`)} className="fa-solid fa-circle-play"/>: <i onClick={()=> pauseTrack(deviceId)} className="fa-solid fa-circle-pause"/>}
                     </div>
                     <div id="nextTrack">
-                      <i class="fa-solid fa-forward-step"></i>
+                      <i className="fa-solid fa-forward-step"></i>
                     </div>
                     <div id="repeat">
-                      <i class="fa-solid fa-repeat"></i>
+                      <i className="fa-solid fa-repeat"></i>
                     </div>
                   </div>
-                  <div id="progressBar">
-                    This is Progress Bar
+                  <div id="progressBar" style={{display: "flex", flexDirection: 'row', gap: "20px", alignItems: 'center' }}>
+                    <div id="timeSwapt">
+                        2:29
+                    </div>
+                    <CustomProgressBar progress={50} />
+                    <div id="trackDuration">
+                        {Math.floor((parseInt(track_Duration)+999)/60000)}:{Math.floor(((parseInt(track_Duration)+999)/1000)%60)}
+                    </div>
                   </div>
               </div> 
               <div id="extraTrackControls" style={{border: "2px solid purple", width: "25%", display: 'flex', flexDirection: 'row', float: 'right'}}>
                 <div id="nowPlayingView">
-                  <i style={{}} class="fa-solid fa-play"></i>
+                  <i style={{}} className="fa-solid fa-play"></i>
                 </div>
                 <div id="lyrics">
 

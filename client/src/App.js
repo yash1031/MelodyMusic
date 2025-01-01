@@ -1,6 +1,7 @@
 import "./App.css";
 import Home from "./Components/Pages/Home/Home";
 import UserState from "./Context/User/UserState";
+import MusicState from "./Context/Music/MusicState";
 import {
   createBrowserRouter,
   RouterProvider,
@@ -79,7 +80,7 @@ const router = createBrowserRouter([
 function App() {
   return (
     <>
-      <UserState><RouterProvider router={router} /></UserState>
+      <MusicState><UserState><RouterProvider router={router} /></UserState></MusicState>
       {/* <SignUp></SignUp> */}
       {/* <EnterMobile></EnterMobile> */}
       {/* <EnterOTP></EnterOTP> */}

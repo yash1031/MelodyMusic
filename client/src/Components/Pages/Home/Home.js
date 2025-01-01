@@ -7,8 +7,8 @@ import './Home.css'
 import WebPlaybackComponent from './WebPlaybackComponent/WebPlaybackComponent'
 
 const Home = () => {
-  const token= process.env.REACT_APP_player_access_token;
-  console.log("token ", token);
+  const player_access_token= process.env.REACT_APP_player_access_token;
+  console.log("player_access_token ", player_access_token);
 
   return (
     <div id="home">
@@ -25,7 +25,7 @@ const Home = () => {
         </div>
 
         <div id="webPlaybackComp">
-            <WebPlaybackComponent token={token}></WebPlaybackComponent>
+            <WebPlaybackComponent player_access_token={player_access_token}></WebPlaybackComponent>
         </div>
         {/* <div id="signUpFooter">
             <SignUpFooter></SignUpFooter>
