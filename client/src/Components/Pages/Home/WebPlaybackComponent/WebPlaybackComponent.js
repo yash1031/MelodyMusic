@@ -22,13 +22,12 @@ const WebPlaybackComponent = (props) => {
   const [track_Artists, setTrackArtists]= useState([]);
   const [album_Image, setAlbumImage]= useState('');
   const clientCredential_accessToken= process.env.REACT_APP_clientCredential_accessToken;
-
+  
   useEffect(() => {
 
     const script = document.createElement("script");
     script.src = "https://sdk.scdn.co/spotify-player.js";
     script.async = true;
-
     document.body.appendChild(script);
 
     window.onSpotifyWebPlaybackSDKReady = () => {
@@ -60,7 +59,7 @@ const WebPlaybackComponent = (props) => {
   useEffect( ()=>{
     const getTrackDetails= async ()=>{
       try{
-        const response=  await fetch(`https://api.spotify.com/v1/tracks/7ynyU7I8T6aWEaKIOrKTxE`,{
+        const response=  await fetch(`https://api.spotify.com/v1/tracks/${current_track}`,{
           method: "GET",
           headers: {
             'Authorization': `Bearer ${clientCredential_accessToken}`,
@@ -127,10 +126,11 @@ const pauseTrack = async (deviceId) => {
             'Authorization': `Bearer ${props.player_access_token}`,
           },
         });
-        if (response.status === 204) {
+        if (response.status === 204 || response.status === 200) {
           setPaused(true);
           console.log('Track is paused!');
         } else {
+          console.log(response.status);
           console.error('Failed to pause track');
         }
     } catch (error) {

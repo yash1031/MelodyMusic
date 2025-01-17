@@ -38,6 +38,10 @@ app.use(cors());
 //Available routes
 app.use('/api/auth', require('./routes/auth'));
 
+// On accessing 'localhost:5000/auth/login':
+// 1. Asks user for necessary permissions as asked in scope
+// 2. Then it redirects to 'http://localhost:3000/auth/callback' and code and state(generated here) are sent as parameters ex: 'http://localhost:3000/auth/callback?code=AQB8CNw0bDDi4gWutIWMcSQXzRLJZEb_-XrgVjp7YykolKN9wxkjtyhXxcjAkzBrZE9v2v5njZ2jQDMddOqOqNYpRJ8ow5ONDrwt-qe5_GKjQJNQH4RMmKJhojL4AGKtSfxHbJps56LP35eMN_rJplfejbdi0fzgDZFFlgExrPz_cKNrOIVGNKYsK-ZQJLkPxq99pu49liwDw2yrT7hibNleXXzAW6ojDjC7YeNVxwX_GxbN0Z8&state=Jh1kj3KlvLHMuADG'
+// Once user provides permission for the mentioned scope, spotify will be able to exchange access token, so access token is getting requested in 'GenerateAccessToken' component
 app.get('/auth/login', (req, res) => {
   console.log(client_id)
   var scope = "streaming \

@@ -38,7 +38,7 @@ const router = createBrowserRouter([
       },
       {
         path: "download",
-        element: <InstallApp />,
+        element: <InstallApp/>,
       },
       {
         path: "content-feed",

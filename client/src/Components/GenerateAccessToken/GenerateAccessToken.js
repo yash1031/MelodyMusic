@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 const { Buffer } = require('buffer');
 
 const GenerateAccessToken = () => {
@@ -7,6 +7,9 @@ const GenerateAccessToken = () => {
     console.log(host);
     const client_id= process.env.REACT_APP_client_id;
     const client_secret= process.env.REACT_APP_client_secret; 
+    const [accessToken, setAccessToken]= useState('');
+    const [refreshToken, setRefreshToken]= useState('');
+
 
     const handleClick= async (event) =>{
         event.preventDefault();
@@ -17,23 +20,6 @@ const GenerateAccessToken = () => {
         const state = urlParams.get('state');
         console.log("code ", code)
         console.log("state ", state)
-        // try{
-        //     const response= await fetch(`${host}/auth/callback?code=${code}&state=${state}`,{
-        //         method: "GET",
-        //     });
-        //     const json= await response.json();
-        //     if(response.json === 200){
-        //         console.log("Access Token Generated Successfully");
-        //         console.log(json.message)
-        //     }
-        //     else{
-        //         console.log("Failure in access token generation");
-        //         console.log(json.message)
-        //     }
-        // }
-        // catch(error){
-        //     console.log("Failure2 ", error);
-        // }
         const response= await fetch(`https://accounts.spotify.com/api/token`,{
           method: "POST",
           body: new URLSearchParams({
@@ -47,6 +33,9 @@ const GenerateAccessToken = () => {
           },
         })
         const json= await response.json();
+        setAccessToken(json.accessToken);
+        setRefreshToken(json.refreshToken);
+
         if(response.status=== 200){
         //   res.status(200).json({message: json});
           console.log("Success in generating access token");
@@ -61,7 +50,9 @@ const GenerateAccessToken = () => {
 
   return (
     <div>
+
       <button onClick= {event => handleClick(event)}>Request Access Token</button>
+      <span> Access Token and Refresh Token will appear in console.</span>
     </div>
   )
 }
