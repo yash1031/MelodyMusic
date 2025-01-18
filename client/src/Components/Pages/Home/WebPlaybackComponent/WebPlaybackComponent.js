@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useContext, useRef } from 'react'
 import MusicContext from '../../../../Context/Music/MusicContext';
 import './WebPlaybackComponent.css'
 
 const CustomProgressBar = ({ progress }) => (
   <div className="progress-bar">
-    <div className="progress-fill" style={{ width: `${progress}%` }}></div>
+    <div className="progress-fill" style={{ color: 'white', width: `${progress}%` }}></div>
   </div>
 );
 
@@ -12,7 +12,7 @@ const WebPlaybackComponent = (props) => {
 
   const [player, setPlayer] = useState(undefined);
   const [is_paused, setPaused] = useState(true);
-  const [trackPlaying, setTrackPlayingStatus]= useState(false);
+  const [trackStarted, setTrackStartedStatus]= useState(false);
   const [trackPosition, setTrackPosition]= useState(0);
   const [is_active, setActive] = useState(false);
   const [deviceId, setDeviceId]= useState('');
@@ -24,13 +24,14 @@ const WebPlaybackComponent = (props) => {
   const [track_Artists, setTrackArtists]= useState([]);
   const [album_Image, setAlbumImage]= useState('');
   const clientCredential_accessToken= process.env.REACT_APP_clientCredential_accessToken;
-  
+  const intervalId= useRef(0);
+
   useEffect(() => {
 
     const script = document.createElement("script");
     script.src = "https://sdk.scdn.co/spotify-player.js";
     script.async = true;
-    document.body.appendChild(script);
+      document.body.appendChild(script);
 
     window.onSpotifyWebPlaybackSDKReady = () => {
         console.log("In spotifyWebPlaybackSDKReady, token is: ", props.player_access_token);
@@ -90,10 +91,26 @@ const WebPlaybackComponent = (props) => {
     getTrackDetails();
   }, [current_track])
 
+  useEffect(()=>{
+    console.log("Paused status: "+ is_paused);
+    // let intervalId;
+    console.log("Yash: "+ "intervalId"+ intervalId);
+    if(is_paused) clearInterval(intervalId.current);
+    else{
+      intervalId.current=  setInterval(()=>{
+          let intervalBeforeNextSecond= 1000;
+          if(trackPosition%1000) intervalBeforeNextSecond= 1000- (trackPosition%1000);
+          setTrackPosition((prev)=> prev+ intervalBeforeNextSecond);
+          console.log("Yash: "+ "trackPosition"+ trackPosition);
+        }, 1000);
+        console.log("Yash: "+ "In else, intervalId"+ intervalId.current);
+    }
+  }, [is_paused])
+
 const playTrack = async (deviceId, trackUri) => {
   console.log("props.player_access_token", props.player_access_token)
   console.log("trackUri", trackUri)
-  if(trackPlaying){
+  if(trackStarted){
     player.seek(trackPosition).then(() => {
       player.togglePlay();
       console.log("trackPosition is: "+ trackPosition);
@@ -117,6 +134,7 @@ const playTrack = async (deviceId, trackUri) => {
       if (response.status === 204) {
         setPaused(false);
         console.log('Track is playing!');
+        setTrackStartedStatus(true);
       } else {
         console.error('Failed to play track', response.error);
         alert('Failed to play track', response.error);
@@ -125,7 +143,6 @@ const playTrack = async (deviceId, trackUri) => {
       console.error('Error playing track:', error);
       alert('Error playing track:', error);
     }
-    setTrackPlayingStatus(true);
   };  
 
 const pauseTrack = async (deviceId) => {
@@ -145,24 +162,6 @@ const pauseTrack = async (deviceId) => {
     
     console.log('Track is paused!');
   });
-    // try {
-    //     const response = await fetch(`https://api.spotify.com/v1/me/player/pause?device_id=${deviceId}`, {
-    //       method: 'PUT',
-    //       headers: {
-    //         'Content-Type': 'application/json',
-    //         'Authorization': `Bearer ${props.player_access_token}`,
-    //       },
-    //     });
-    //     if (response.status === 204 || response.status === 200) {
-    //       setPaused(true);
-    //       console.log('Track is paused!');
-    //     } else {
-    //       console.log(response.status);
-    //       console.error('Failed to pause track');
-    //     }
-    // } catch (error) {
-    //   console.error('Error pausing track:', error);
-    // }
 }  
 
   return (
@@ -193,7 +192,7 @@ const pauseTrack = async (deviceId) => {
                       <i className="fa-solid fa-backward-step"></i>
                     </div>
                     <div id="togglePlay">
-                      {is_paused? <i onClick={()=> {setTrackPlayingStatus(false); playTrack(deviceId, `spotify:track:${current_track}`)}} className="fa-solid fa-circle-play"/>: <i onClick={()=> pauseTrack(deviceId)} className="fa-solid fa-circle-pause"/>}
+                      {is_paused? <i onClick={()=> {setTrackStartedStatus(false); playTrack(deviceId, `spotify:track:${current_track}`)}} className="fa-solid fa-circle-play"/>: <i onClick={()=> pauseTrack(deviceId)} className="fa-solid fa-circle-pause"/>}
                     </div>
                     <div id="nextTrack">
                       <i className="fa-solid fa-forward-step"></i>
@@ -204,9 +203,9 @@ const pauseTrack = async (deviceId) => {
                   </div>
                   <div id="progressBar" style={{display: "flex", flexDirection: 'row', gap: "20px", alignItems: 'center' }}>
                     <div id="timeSwapt">
-                        2:29
+                        {Math.floor((Math.floor(trackPosition/1000))/60)}:{(Math.floor(trackPosition/1000))%60}
                     </div>
-                    <CustomProgressBar progress={50} />
+                    <CustomProgressBar progress={(trackPosition*100)/track_Duration} />
                     <div id="trackDuration">
                         {Math.floor((parseInt(track_Duration)+999)/60000)}:{Math.floor(((parseInt(track_Duration)+999)/1000)%60)}
                     </div>
