@@ -12,6 +12,8 @@ const WebPlaybackComponent = (props) => {
 
   const [player, setPlayer] = useState(undefined);
   const [is_paused, setPaused] = useState(true);
+  const [trackPlaying, setTrackPlayingStatus]= useState(false);
+  const [trackPosition, setTrackPosition]= useState(0);
   const [is_active, setActive] = useState(false);
   const [deviceId, setDeviceId]= useState('');
   const [trackProgress, setTrackProgress]= useState('');
@@ -52,8 +54,6 @@ const WebPlaybackComponent = (props) => {
         player.connect();
 
     };
-
-
 }, []);
 
   useEffect( ()=>{
@@ -93,6 +93,16 @@ const WebPlaybackComponent = (props) => {
 const playTrack = async (deviceId, trackUri) => {
   console.log("props.player_access_token", props.player_access_token)
   console.log("trackUri", trackUri)
+  if(trackPlaying){
+    player.seek(trackPosition).then(() => {
+      player.togglePlay();
+      console.log("trackPosition is: "+ trackPosition);
+      console.log('Resumed playback!');
+      setPaused(false);
+      console.log('Track is playing!');
+    });
+    return;
+  }
     try {
       const response = await fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
         method: 'PUT',
@@ -115,27 +125,44 @@ const playTrack = async (deviceId, trackUri) => {
       console.error('Error playing track:', error);
       alert('Error playing track:', error);
     }
+    setTrackPlayingStatus(true);
   };  
 
 const pauseTrack = async (deviceId) => {
-    try {
-        const response = await fetch(`https://api.spotify.com/v1/me/player/pause?device_id=${deviceId}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${props.player_access_token}`,
-          },
-        });
-        if (response.status === 204 || response.status === 200) {
-          setPaused(true);
-          console.log('Track is paused!');
-        } else {
-          console.log(response.status);
-          console.error('Failed to pause track');
-        }
-    } catch (error) {
-      console.error('Error pausing track:', error);
-    }
+  player.togglePlay().then(() => {
+    console.log('Toggled playback!');
+    setPaused(true);
+    player.getCurrentState().then(state => {
+      if (!state) {
+        console.error('User is not playing music through the Web Playback SDK');
+        return;
+      }
+      const track_position = state.position;
+      setTrackPosition(track_position);
+      console.log(track_position);
+      console.log(state);
+    });
+    
+    console.log('Track is paused!');
+  });
+    // try {
+    //     const response = await fetch(`https://api.spotify.com/v1/me/player/pause?device_id=${deviceId}`, {
+    //       method: 'PUT',
+    //       headers: {
+    //         'Content-Type': 'application/json',
+    //         'Authorization': `Bearer ${props.player_access_token}`,
+    //       },
+    //     });
+    //     if (response.status === 204 || response.status === 200) {
+    //       setPaused(true);
+    //       console.log('Track is paused!');
+    //     } else {
+    //       console.log(response.status);
+    //       console.error('Failed to pause track');
+    //     }
+    // } catch (error) {
+    //   console.error('Error pausing track:', error);
+    // }
 }  
 
   return (
@@ -166,7 +193,7 @@ const pauseTrack = async (deviceId) => {
                       <i className="fa-solid fa-backward-step"></i>
                     </div>
                     <div id="togglePlay">
-                      {is_paused? <i onClick={()=> playTrack(deviceId, `spotify:track:${current_track}`)} className="fa-solid fa-circle-play"/>: <i onClick={()=> pauseTrack(deviceId)} className="fa-solid fa-circle-pause"/>}
+                      {is_paused? <i onClick={()=> {setTrackPlayingStatus(false); playTrack(deviceId, `spotify:track:${current_track}`)}} className="fa-solid fa-circle-play"/>: <i onClick={()=> pauseTrack(deviceId)} className="fa-solid fa-circle-pause"/>}
                     </div>
                     <div id="nextTrack">
                       <i className="fa-solid fa-forward-step"></i>
