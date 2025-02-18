@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useContext, useRef } from 'react'
+import useSound from 'use-sound';
 import MusicContext from '../../../../Context/Music/MusicContext';
 import './WebPlaybackComponent.css'
+import ramStuti from './../../../../SampleSongs/RamStuti.mp3'
 
 const CustomProgressBar = ({ progress }) => (
   <div className="progress-bar">
@@ -19,150 +21,24 @@ const WebPlaybackComponent = (props) => {
   const [trackProgress, setTrackProgress]= useState('');
   const context= useContext(MusicContext);
   const {current_track, setTrack}= context;
-  const [track_Duration, setTrackDuration]= useState('');
   const [track_Name, setTrackName]= useState('');
+  const [track_Duration, setTrackDuration]= useState('');
   const [track_Artists, setTrackArtists]= useState([]);
   const [album_Image, setAlbumImage]= useState('');
   const clientCredential_accessToken= process.env.REACT_APP_clientCredential_accessToken;
   const intervalId= useRef(0);
+  const [volume, setVolume]= useState(1);
 
-  useEffect(() => {
+  const [play, {pause, duration}] = useSound(ramStuti, {volume});
 
-    const script = document.createElement("script");
-    script.src = "https://sdk.scdn.co/spotify-player.js";
-    script.async = true;
-      document.body.appendChild(script);
-
-    window.onSpotifyWebPlaybackSDKReady = () => {
-        console.log("In spotifyWebPlaybackSDKReady, token is: ", props.player_access_token);
-        const player = new window.Spotify.Player({
-            name: 'Web Playback SDK Quick Start Player',
-            getOAuthToken: cb => { cb(props.player_access_token); },
-            volume: 0.5
-        });
-
-        setPlayer(player);
-
-        player.addListener('ready', ({ device_id }) => {
-            console.log('Ready with Device ID', device_id);
-            setDeviceId(device_id);
-        });
-
-        player.addListener('not_ready', ({ device_id }) => {
-            console.log('Device ID has gone offline', device_id);
-        });
-
-        player.connect();
-
-    };
-}, []);
-
-  useEffect( ()=>{
-    const getTrackDetails= async ()=>{
-      try{
-        const response=  await fetch(`https://api.spotify.com/v1/tracks/${current_track}`,{
-          method: "GET",
-          headers: {
-            'Authorization': `Bearer ${clientCredential_accessToken}`,
-          }
-        })
-        const json= await response.json();
-        if(response.status === 200){
-          setTrackDuration(json.duration_ms);
-          setTrackName(json.name);
-          setAlbumImage(json.album?.images[0]?.url)
-          let artists= [];
-          let duration= await json.duration_ms;
-          json.artists.map((artist)=>{
-            artists.push(artist);
-          })
-          setTrackArtists(artists);
-        }
-        else{
-          console.log("Error1 fetching track details", json.error)
-          // alert("Error1 fetching track details", json.error)
-        }
-      }
-      catch(error){
-        console.log("Error2 fetching track details", error)
-        // alert("Error2 fetching track details", error)
-      }
-    }
-    getTrackDetails();
-  }, [current_track])
-
-  useEffect(()=>{
-    console.log("Paused status: "+ is_paused);
-    // let intervalId;
-    console.log("Yash: "+ "intervalId"+ intervalId);
-    if(is_paused) clearInterval(intervalId.current);
-    else{
-      intervalId.current=  setInterval(()=>{
-          let intervalBeforeNextSecond= 1000;
-          if(trackPosition%1000) intervalBeforeNextSecond= 1000- (trackPosition%1000);
-          setTrackPosition((prev)=> prev+ intervalBeforeNextSecond);
-          console.log("Yash: "+ "trackPosition"+ trackPosition);
-        }, 1000);
-        console.log("Yash: "+ "In else, intervalId"+ intervalId.current);
-    }
-  }, [is_paused])
-
-const playTrack = async (deviceId, trackUri) => {
-  console.log("props.player_access_token", props.player_access_token)
-  console.log("trackUri", trackUri)
-  if(trackStarted){
-    player.seek(trackPosition).then(() => {
-      player.togglePlay();
-      console.log("trackPosition is: "+ trackPosition);
-      console.log('Resumed playback!');
-      setPaused(false);
-      console.log('Track is playing!');
-    });
-    return;
+  const handlePlay= () =>{
+    setPaused(false);
+    console.log("Duration of the track is: "+ duration);
   }
-    try {
-      const response = await fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
-        method: 'PUT',
-        body: JSON.stringify({
-          uris: [trackUri],
-        }),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${props.player_access_token}`,
-        },
-      });
-      if (response.status === 204) {
-        setPaused(false);
-        console.log('Track is playing!');
-        setTrackStartedStatus(true);
-      } else {
-        console.error('Failed to play track', response.error);
-        alert('Failed to play track', response.error);
-      }
-    } catch (error) {
-      console.error('Error playing track:', error);
-      alert('Error playing track:', error);
-    }
-  };  
-
-const pauseTrack = async (deviceId) => {
-  player.togglePlay().then(() => {
-    console.log('Toggled playback!');
+  const handlePause= () =>{
     setPaused(true);
-    player.getCurrentState().then(state => {
-      if (!state) {
-        console.error('User is not playing music through the Web Playback SDK');
-        return;
-      }
-      const track_position = state.position;
-      setTrackPosition(track_position);
-      console.log(track_position);
-      console.log(state);
-    });
-    
-    console.log('Track is paused!');
-  });
-}  
+  }
+  const [seekTime, setSeekTime] = useState(10); // Default seek position (in seconds)
 
   return (
     <>
@@ -192,7 +68,7 @@ const pauseTrack = async (deviceId) => {
                       <i className="fa-solid fa-backward-step"></i>
                     </div>
                     <div id="togglePlay">
-                      {is_paused? <i onClick={()=> {setTrackStartedStatus(false); playTrack(deviceId, `spotify:track:${current_track}`)}} className="fa-solid fa-circle-play"/>: <i onClick={()=> pauseTrack(deviceId)} className="fa-solid fa-circle-pause"/>}
+                      {is_paused? <i onClick={()=> {play(); handlePlay();}} className="fa-solid fa-circle-play"/>: <i onClick={()=> {pause(); handlePause();}} className="fa-solid fa-circle-pause"/>}
                     </div>
                     <div id="nextTrack">
                       <i className="fa-solid fa-forward-step"></i>
@@ -205,9 +81,9 @@ const pauseTrack = async (deviceId) => {
                     <div id="timeSwapt">
                         {Math.floor((Math.floor(trackPosition/1000))/60)}:{(Math.floor(trackPosition/1000))%60}
                     </div>
-                    <CustomProgressBar progress={(trackPosition*100)/track_Duration} />
+                    <CustomProgressBar progress={(trackPosition*100)/duration} />
                     <div id="trackDuration">
-                        {Math.floor((parseInt(track_Duration)+999)/60000)}:{Math.floor(((parseInt(track_Duration)+999)/1000)%60)}
+                        {Math.floor((parseInt(duration)+999)/60000)}:{Math.floor(((parseInt(duration)+999)/1000)%60)}
                     </div>
                   </div>
               </div> 
