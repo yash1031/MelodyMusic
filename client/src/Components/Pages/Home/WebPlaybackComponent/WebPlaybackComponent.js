@@ -3,6 +3,12 @@ import useSound from 'use-sound';
 import MusicContext from '../../../../Context/Music/MusicContext';
 import './WebPlaybackComponent.css'
 import ramStuti from './../../../../SampleSongs/RamStuti.mp3'
+import NowPlayingViewSymbol from './Images/NowPlayingView.png'
+import LyricsSymbol from './Images/Lyrics.png'
+import MuteSymbol from './Images/Mute.png'
+import QueueSymbol from './Images/Queue.png'
+import FullScreenSymbol from './Images/FullScreen.png'
+import OpenMiniPlayerSymbol from './Images/OpenMiniPlayer.png'
 
 const WebPlaybackComponent = (props) => {
 
@@ -146,28 +152,28 @@ const WebPlaybackComponent = (props) => {
                     </div>
                   </div>
               </div> 
-              <div id="extraTrackControls" style={{border: "2px solid purple", width: "25%", display: 'flex', flexDirection: 'row', float: 'right'}}>
-                <div id="nowPlayingView">
-                  <i style={{}} className="fa-solid fa-play"></i>
-                </div>
-                <div id="lyrics">
-
-                </div>
-                <div id="showQueue">
-
-                </div>
-                <div id="controlMute">
-
-                </div>
-                <div id="controleVolume">
-
-                </div>
-                <div id="openMiniPlayer">
-
-                </div>
-                <div id="fullScreen">
-
-                </div>
+              <div id="extraTrackControls" style={{border: "2px solid purple", width: "25%", display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center'}}>
+                <span id="nowPlayingView">
+                  <img src={NowPlayingViewSymbol} alt="" />
+                </span>
+                <span id="lyrics">
+                  <img src={LyricsSymbol} alt="" />
+                  {/* <i class="fa-solid fa-microphone-stand"></i> */}
+                </span>
+                <span id="showQueue">
+                  <img src={QueueSymbol} alt="" />
+                </span>
+                <span id="controlMute">
+                  <img src={MuteSymbol} alt="" />
+                </span>
+                <span id="controleVolume">
+                </span>
+                <span id="openMiniPlayer">
+                  <img src={OpenMiniPlayerSymbol} alt="" />
+                </span>
+                <span id="fullScreen" style={{fontWeight:"bolder", color: "white"}}>
+                  <img src={FullScreenSymbol} alt="" />
+                </span>
               </div>
         </div>
       </>
