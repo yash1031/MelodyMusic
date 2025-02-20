@@ -4,21 +4,16 @@ import MusicContext from '../../../../Context/Music/MusicContext';
 import './WebPlaybackComponent.css'
 import ramStuti from './../../../../SampleSongs/RamStuti.mp3'
 
-const CustomProgressBar = ({ progress }) => (
-  <div className="progress-bar">
-    <div className="progress-fill" style={{ color: 'white', width: `${progress}%` }}></div>
-  </div>
-);
-
 const WebPlaybackComponent = (props) => {
 
-  const [player, setPlayer] = useState(undefined);
   const [is_paused, setPaused] = useState(true);
+  const [trackTimeStamp, setTrackTimeStamp]= useState(0);
+  const [trackProgress, setTrackProgress]= useState('');
+  const track_progress= useRef('');
+  const [player, setPlayer] = useState(undefined);
   const [trackStarted, setTrackStartedStatus]= useState(false);
-  const [trackPosition, setTrackPosition]= useState(0);
   const [is_active, setActive] = useState(false);
   const [deviceId, setDeviceId]= useState('');
-  const [trackProgress, setTrackProgress]= useState('');
   const context= useContext(MusicContext);
   const {current_track, setTrack}= context;
   const [track_Name, setTrackName]= useState('');
@@ -28,17 +23,78 @@ const WebPlaybackComponent = (props) => {
   const clientCredential_accessToken= process.env.REACT_APP_clientCredential_accessToken;
   const intervalId= useRef(0);
   const [volume, setVolume]= useState(1);
+  const startX= useRef(null); // starting X coordinates of progress bar
+  const endX= useRef(null); // ending X coordinates of progress bar
+  const [isMouseDown, setIsMouseDown]= useState(false); // true when left mouse button is clicked down-> will be false when button is released
+  const [posX, setPosX]= useState(''); // X coordinates of window while moving mouse after click-hold on progress-bar
+  const [play, {pause, duration, sound}] = useSound(ramStuti, {volume, onend: ()=> {setTrackProgress(0); setTrackTimeStamp(0); setPaused(true)}}); // duration is in milliseconds, floating to more than 4-5 digits
+  const [seekTime, setSeekTime] = useState(10); // Default seek position (in seconds) to be used as- sound.seek(seekTime)
 
-  const [play, {pause, duration}] = useSound(ramStuti, {volume});
+  useEffect(()=>{
+    if(!sound) {
+      return;
+    }
+    if(is_paused) return;
+    if(isMouseDown) return;
+    const interval= setInterval(()=>{
+      let currPos= sound.seek() // return time in seconds
+      let currProgress= (currPos/(Math.floor((parseInt(duration))/1000)))*100;
+      setTrackProgress(currProgress);
+      track_progress.current= currProgress;
+      if(track_progress.current=== 100) setPaused(true);
+      setTrackTimeStamp(sound.seek());
+    }, 1000);
+    return () => {
+      clearInterval(interval); 
+      };
+  },[sound, is_paused, isMouseDown]);
+
+  const handleMouseMove= (e)=>{
+    //e.clientX is X coordinate of current position of window 
+    setPosX(e.clientX); 
+    setTrackPosition(e.clientX);
+  }
+  const handleMouseUp= (e)=>{
+    setContent();
+    setIsMouseDown(false);  
+    window.removeEventListener("mousemove", handleMouseMove);
+    window.removeEventListener("mouseup", handleMouseUp);
+  }
+  const handleMouseDown= (e)=>{
+    setTrackPosition(e.clientX);
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
+    setIsMouseDown(true);
+  }
 
   const handlePlay= () =>{
     setPaused(false);
-    console.log("Duration of the track is: "+ duration);
   }
   const handlePause= () =>{
     setPaused(true);
   }
-  const [seekTime, setSeekTime] = useState(10); // Default seek position (in seconds)
+
+  const setTrackPosition= (windowXCoordinate)=>{
+    const element = document.getElementById("scrollBar");
+    const rect = element.getBoundingClientRect();
+    startX.current = rect.left;
+    endX.current = rect.right;
+    let currProgress;
+    if(windowXCoordinate<= startX.current) currProgress= 0; //0- 100
+    else if(windowXCoordinate>= endX.current) currProgress= 100;
+    else{
+      currProgress= ((windowXCoordinate- startX.current)/(endX.current- startX.current))*100; //0- 100
+    }
+    setTrackProgress(currProgress);
+    track_progress.current= currProgress;
+    if(track_progress.current=== 100) setPaused(true);
+    setTrackTimeStamp((currProgress*(duration/1000))/100);
+  }
+
+  const setContent= ()=>{
+    let currTrackTimeStamp= ((duration/1000)*track_progress.current)/100; //track content position in second, converted from trackProgress
+    sound.seek(currTrackTimeStamp);
+  }
 
   return (
     <>
@@ -79,11 +135,14 @@ const WebPlaybackComponent = (props) => {
                   </div>
                   <div id="progressBar" style={{display: "flex", flexDirection: 'row', gap: "20px", alignItems: 'center' }}>
                     <div id="timeSwapt">
-                        {Math.floor((Math.floor(trackPosition/1000))/60)}:{(Math.floor(trackPosition/1000))%60}
+                        {Math.floor((Math.floor(trackTimeStamp))/60)}:{(Math.floor(trackTimeStamp))%60}
                     </div>
-                    <CustomProgressBar progress={(trackPosition*100)/duration} />
+                    <div id="scrollBar" onMouseDown={handleMouseDown} >
+                      <div id="scrollFill" style={{ color: 'white', width: `${trackProgress}%` }}>
+                      </div>
+                    </div>
                     <div id="trackDuration">
-                        {Math.floor((parseInt(duration)+999)/60000)}:{Math.floor(((parseInt(duration)+999)/1000)%60)}
+                        {Math.floor((parseInt(duration))/60000)}:{Math.floor(((parseInt(duration))/1000)%60)}
                     </div>
                   </div>
               </div> 
@@ -110,7 +169,6 @@ const WebPlaybackComponent = (props) => {
 
                 </div>
               </div>
-           {/* <button onClick={togglePlay}>{is_paused? "Play Track": "Pause Track"}</button> */}
         </div>
       </>
   )
