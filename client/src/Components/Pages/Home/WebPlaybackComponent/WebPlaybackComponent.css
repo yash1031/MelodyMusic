@@ -1,7 +1,7 @@
 /* Unfilled part */
 #scrollBar {
     width: 100%;
-    height: 4px;
+    height: 5px;
     background-color: #898b881f; /* Unfilled part color */
     border-radius: 5px;
     overflow: hidden;
@@ -16,4 +16,23 @@
 
 #scrollBar:hover #scrollFill{
   background-color: rgb(64, 169, 64); 
+}
+
+#volumeBar {
+  width: 5vw;
+  height: 4.5px;
+  background-color: #898b881f; /* Unfilled part color */
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+/* Filled part */
+#volumeFill {
+height: 100%;
+background-color: white; /* Filled part color */
+transition: width 0.3s; /* Smooth transition */
+}
+
+#volumeBar:hover #volumeFill{
+background-color: rgb(64, 169, 64); 
 }

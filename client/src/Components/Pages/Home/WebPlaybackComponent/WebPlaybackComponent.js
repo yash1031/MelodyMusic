@@ -14,8 +14,11 @@ const WebPlaybackComponent = (props) => {
 
   const [is_paused, setPaused] = useState(true);
   const [trackTimeStamp, setTrackTimeStamp]= useState(0);
-  const [trackProgress, setTrackProgress]= useState('');
+  const [trackProgress, setTrackProgress]= useState(''); 
+  const [volumeProgress, setVolumeProgress]= useState(100); 
   const track_progress= useRef('');
+  const volume_progress= useRef(100);
+  const last_volume_progress= useRef(0);
   const [player, setPlayer] = useState(undefined);
   const [trackStarted, setTrackStartedStatus]= useState(false);
   const [is_active, setActive] = useState(false);
@@ -29,10 +32,12 @@ const WebPlaybackComponent = (props) => {
   const clientCredential_accessToken= process.env.REACT_APP_clientCredential_accessToken;
   const intervalId= useRef(0);
   const [volume, setVolume]= useState(1);
-  const startX= useRef(null); // starting X coordinates of progress bar
-  const endX= useRef(null); // ending X coordinates of progress bar
-  const [isMouseDown, setIsMouseDown]= useState(false); // true when left mouse button is clicked down-> will be false when button is released
-  const [posX, setPosX]= useState(''); // X coordinates of window while moving mouse after click-hold on progress-bar
+  const startXTrack= useRef(null); // starting X coordinates of progress bar
+  const endXTrack= useRef(null); // ending X coordinates of progress bar
+  const startXVolumeBar= useRef(null); // starting X coordinates of progress bar
+  const endXVolumeBar= useRef(null); // ending X coordinates of progress bar
+  const [isMouseDownOnTrack, setisMouseDownOnTrack]= useState(false); // true when left mouse button is clicked down-> will be false when button is released
+  const [isMouseDownOnVolume, setisMouseDownOnVolume]= useState(false); // true when left mouse button is clicked down-> will be false when button is released
   const [play, {pause, duration, sound}] = useSound(ramStuti, {volume, onend: ()=> {setTrackProgress(0); setTrackTimeStamp(0); setPaused(true)}}); // duration is in milliseconds, floating to more than 4-5 digits
   const [seekTime, setSeekTime] = useState(10); // Default seek position (in seconds) to be used as- sound.seek(seekTime)
 
@@ -41,7 +46,7 @@ const WebPlaybackComponent = (props) => {
       return;
     }
     if(is_paused) return;
-    if(isMouseDown) return;
+    if(isMouseDownOnTrack) return;
     const interval= setInterval(()=>{
       let currPos= sound.seek() // return time in seconds
       let currProgress= (currPos/(Math.floor((parseInt(duration))/1000)))*100;
@@ -53,24 +58,22 @@ const WebPlaybackComponent = (props) => {
     return () => {
       clearInterval(interval); 
       };
-  },[sound, is_paused, isMouseDown]);
+  },[sound, is_paused, isMouseDownOnTrack]);
 
-  const handleMouseMove= (e)=>{
-    //e.clientX is X coordinate of current position of window 
-    setPosX(e.clientX); 
+  const handleMouseMoveOnTrack= (e)=>{
     setTrackPosition(e.clientX);
   }
-  const handleMouseUp= (e)=>{
+  const handleMouseUpOnTrack= (e)=>{
     setContent();
-    setIsMouseDown(false);  
-    window.removeEventListener("mousemove", handleMouseMove);
-    window.removeEventListener("mouseup", handleMouseUp);
+    setisMouseDownOnTrack(false);  
+    window.removeEventListener("mousemove", handleMouseMoveOnTrack);
+    window.removeEventListener("mouseup", handleMouseUpOnTrack);
   }
-  const handleMouseDown= (e)=>{
+  const handleMouseDownOnTrack= (e)=>{
     setTrackPosition(e.clientX);
-    window.addEventListener("mousemove", handleMouseMove);
-    window.addEventListener("mouseup", handleMouseUp);
-    setIsMouseDown(true);
+    window.addEventListener("mousemove", handleMouseMoveOnTrack);
+    window.addEventListener("mouseup", handleMouseUpOnTrack);
+    setisMouseDownOnTrack(true);
   }
 
   const handlePlay= () =>{
@@ -83,13 +86,13 @@ const WebPlaybackComponent = (props) => {
   const setTrackPosition= (windowXCoordinate)=>{
     const element = document.getElementById("scrollBar");
     const rect = element.getBoundingClientRect();
-    startX.current = rect.left;
-    endX.current = rect.right;
+    startXTrack.current = rect.left;
+    endXTrack.current = rect.right;
     let currProgress;
-    if(windowXCoordinate<= startX.current) currProgress= 0; //0- 100
-    else if(windowXCoordinate>= endX.current) currProgress= 100;
+    if(windowXCoordinate<= startXTrack.current) currProgress= 0; //0- 100
+    else if(windowXCoordinate>= endXTrack.current) currProgress= 100;
     else{
-      currProgress= ((windowXCoordinate- startX.current)/(endX.current- startX.current))*100; //0- 100
+      currProgress= ((windowXCoordinate- startXTrack.current)/(endXTrack.current- startXTrack.current))*100; //0- 100
     }
     setTrackProgress(currProgress);
     track_progress.current= currProgress;
@@ -100,6 +103,51 @@ const WebPlaybackComponent = (props) => {
   const setContent= ()=>{
     let currTrackTimeStamp= ((duration/1000)*track_progress.current)/100; //track content position in second, converted from trackProgress
     sound.seek(currTrackTimeStamp);
+  }
+
+  const handleMouseMoveOnVolume= (e)=>{
+    setVolumePosition(e.clientX);
+  }
+  const handleMouseUpOnVolume= (e)=>{
+    setVolume((volume_progress.current)/100);
+    setisMouseDownOnVolume(false);  
+    window.removeEventListener("mousemove", handleMouseMoveOnVolume);
+    window.removeEventListener("mouseup", handleMouseUpOnVolume);
+  }
+  const handleMouseDownOnVolume= (e)=>{
+    setVolumePosition(e.clientX);
+    window.addEventListener("mousemove", handleMouseMoveOnVolume);
+    window.addEventListener("mouseup", handleMouseUpOnVolume);
+    setisMouseDownOnVolume(true);
+  }
+
+  const setVolumePosition= (windowXCoordinate)=>{
+    const element = document.getElementById("volumeBar");
+    const rect = element.getBoundingClientRect();
+    startXVolumeBar.current = rect.left;
+    endXVolumeBar.current = rect.right;
+    let currProgress;
+    if(windowXCoordinate<= startXVolumeBar.current) currProgress= 0; //0- 100
+    else if(windowXCoordinate>= endXVolumeBar.current) currProgress= 100;
+    else{
+      currProgress= ((windowXCoordinate- startXVolumeBar.current)/(endXVolumeBar.current- startXVolumeBar.current))*100; //0- 100
+    }
+    setVolumeProgress(currProgress);
+    volume_progress.current= currProgress;
+  }
+
+  const handleMute= ()=>{
+    if(volume_progress.current){
+      setVolumeProgress(0);
+      setVolume(0);
+      last_volume_progress.current= volume_progress.current;
+      volume_progress.current= 0;
+    }
+    else{
+      setVolume((last_volume_progress.current)/100);
+      setVolumeProgress(last_volume_progress.current);
+      volume_progress.current= last_volume_progress.current;
+    }
   }
 
   return (
@@ -143,7 +191,7 @@ const WebPlaybackComponent = (props) => {
                     <div id="timeSwapt">
                         {Math.floor((Math.floor(trackTimeStamp))/60)}:{(Math.floor(trackTimeStamp))%60}
                     </div>
-                    <div id="scrollBar" onMouseDown={handleMouseDown} >
+                    <div id="scrollBar" onMouseDown={handleMouseDownOnTrack} >
                       <div id="scrollFill" style={{ color: 'white', width: `${trackProgress}%` }}>
                       </div>
                     </div>
@@ -158,21 +206,27 @@ const WebPlaybackComponent = (props) => {
                 </span>
                 <span id="lyrics">
                   <img src={LyricsSymbol} alt="" />
-                  {/* <i class="fa-solid fa-microphone-stand"></i> */}
                 </span>
                 <span id="showQueue">
                   <img src={QueueSymbol} alt="" />
                 </span>
-                <span id="controlMute">
-                  <img src={MuteSymbol} alt="" />
+                <span id="controlMute" onClick={handleMute}>
+                  {/* <img src={MuteSymbol} alt="" /> */}
+                  {volumeProgress?(<i className="fa-solid fa-volume-off" style={{color: "gray"}}></i>):
+                  (<i className="fa-solid fa-volume-xmark" style={{color: "gray"}}></i>)}
                 </span>
                 <span id="controleVolume">
+                    <div id="volumeBar" onMouseDown={handleMouseDownOnVolume} >
+                      <div id="volumeFill" style={{ color: 'white', width: `${volumeProgress}%` }}>
+                      </div>
+                    </div>
                 </span>
                 <span id="openMiniPlayer">
                   <img src={OpenMiniPlayerSymbol} alt="" />
                 </span>
                 <span id="fullScreen" style={{fontWeight:"bolder", color: "white"}}>
-                  <img src={FullScreenSymbol} alt="" />
+                  {/* <img src={FullScreenSymbol} alt="" /> */}
+                  <i className="fa-solid fa-up-right-and-down-left-from-center" style={{color: "gray"}}></i>
                 </span>
               </div>
         </div>
