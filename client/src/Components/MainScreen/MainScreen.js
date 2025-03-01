@@ -7,7 +7,7 @@ import {
 
 const MainScreen = () => {
   return (
-    <div>
+    <div id='main-screen'>
       <Outlet></Outlet>
     </div>
   )

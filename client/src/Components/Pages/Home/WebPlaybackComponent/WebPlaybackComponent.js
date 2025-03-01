@@ -138,10 +138,12 @@ const WebPlaybackComponent = (props) => {
 
   const handleMute= ()=>{
     if(volume_progress.current){
+      console.log("Mute about to click");
       setVolumeProgress(0);
       setVolume(0);
       last_volume_progress.current= volume_progress.current;
       volume_progress.current= 0;
+      console.log("Mute about to clicked");
     }
     else{
       setVolume((last_volume_progress.current)/100);
