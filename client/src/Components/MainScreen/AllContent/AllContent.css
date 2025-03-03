@@ -9,13 +9,13 @@
 .section{
     width: 100%;  /* Fixed width*/
     /*height: 400px; /*Fixed height */
-  overflow-y: hidden; /* Enables vertical scrolling*/
-   overflow-x: hidden; /* Hides horizontal scroll if needed */
-  display: flex;
-  flex-direction: row; /* Stack cards vertically */
-  gap: 5px; /* Space between cards */
-  flex-wrap: nowrap;
-  position: relative; /* Needed for absolute positioning of buttons */
+    overflow-y: hidden; /* Enables vertical scrolling*/
+    overflow-x: hidden; /* Hides horizontal scroll if needed */
+    display: flex;
+    flex-direction: row; /* Stack cards vertically */
+    gap: 5px; /* Space between cards */
+    flex-wrap: nowrap;
+    position: relative; /* Needed for absolute positioning of buttons */
 }
 
 /* Scrollable wrapper inside section */

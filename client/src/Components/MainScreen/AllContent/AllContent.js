@@ -16,35 +16,32 @@ const AllContent = () => {
     "Best Of Albums",
   ];
 
-  const scrollRefs = useRef({}); // Store refs dynamically for each section
-  const [scrollState, setScrollState] = useState({});
+  const scrollRefs = useRef(new Array(sections.length).fill(null)); // Store refs dynamically for each section
+  const [scrollState, setScrollState] = useState(new Array(sections.length).fill({canScrollLeft: false, canScrollRight: true}));
 
-  // Function to track scroll position for each section
-  const checkScrollPosition = (id) => {
-    if (!scrollRefs.current[id]) return;
+  const checkScrollPosition = (idx) => {
+    if (!scrollRefs.current[idx]) return;
     
-    const { scrollLeft, scrollWidth, clientWidth } = scrollRefs.current[id];
+    const { scrollLeft, scrollWidth, clientWidth } = scrollRefs.current[idx];
 
-    setScrollState((prev) => ({
-      ...prev,
-      [id]: {
+    setScrollState((prev) => ([
+      ...prev.slice(0,idx),
+      {
         canScrollLeft: scrollLeft > 0,
         canScrollRight: scrollLeft < scrollWidth - clientWidth,
       },
-    }));
+      ...prev.slice(idx+1)
+    ]));
   };
 
   // Function to scroll left/right
-  const scroll = (id, direction) => {
-    if (!scrollRefs.current[id]) return;
+  const scroll = (idx, direction) => {
+    if (!scrollRefs.current[idx]) return;
     
     const scrollAmount = 300; // Adjust scroll amount as needed
-    scrollRefs.current[id].scrollBy({
-      left: direction === "left" ? -scrollAmount : scrollAmount,
-      behavior: "smooth",
-    });
+    scrollRefs.current[idx].scrollLeft += direction === "left" ? -scrollAmount : scrollAmount; // On scrolling right, scrollLeft amount will increase and it will decrease on scrolling left
 
-    setTimeout(() => checkScrollPosition(id), 100); // Delay to update state
+    setTimeout(() => checkScrollPosition(idx), 100); // Delay to update state
   };
 
   return (
@@ -53,12 +50,12 @@ const AllContent = () => {
         const id = `section-${idx}`;
 
         return (
-          <div key={id}>
+          <div key={idx}>
             <h1>{section}</h1>
             <div className="section">
               {/* Left Scroll Button */}
-              {scrollState[id]?.canScrollLeft && (
-                <button className="scroll-btn left" onClick={() => scroll(id, "left")}>
+              {scrollState[idx]?.canScrollLeft && (
+                <button className="scroll-btn left" onClick={() => scroll(idx, "left")}>
                   &lt;
                 </button>
               )}
@@ -66,8 +63,8 @@ const AllContent = () => {
               {/* Scrollable Container */}
               <div
                 className="scroll-container"
-                ref={(el) => (scrollRefs.current[id] = el)}
-                onScroll={() => checkScrollPosition(id)}
+                ref={(el) => (scrollRefs.current[idx] = el)}
+                onScroll={() => checkScrollPosition(idx)}
               >
                 {arr.map((item, index) => (
                   <div key={index} className="card">
@@ -82,8 +79,8 @@ const AllContent = () => {
               </div>
 
               {/* Right Scroll Button */}
-              {scrollState[id]?.canScrollRight && (
-                <button className="scroll-btn right" onClick={() => scroll(id, "right")}>
+              {scrollState[idx]?.canScrollRight && (
+                <button className="scroll-btn right" onClick={() => scroll(idx, "right")}>
                   &gt;
                 </button>
               )}
