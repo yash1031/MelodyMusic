@@ -38,7 +38,13 @@ const WebPlaybackComponent = (props) => {
   const endXVolumeBar= useRef(null); // ending X coordinates of progress bar
   const [isMouseDownOnTrack, setisMouseDownOnTrack]= useState(false); // true when left mouse button is clicked down-> will be false when button is released
   const [isMouseDownOnVolume, setisMouseDownOnVolume]= useState(false); // true when left mouse button is clicked down-> will be false when button is released
-  const [play, {pause, duration, sound}] = useSound(ramStuti, {volume, onend: ()=> {setTrackProgress(0); setTrackTimeStamp(0); setPaused(true)}}); // duration is in milliseconds, floating to more than 4-5 digits
+  const s3Mp3Url= "https://melody-music-tracks.s3-accelerate.amazonaws.com/Abcd+-+Yaariyan+-+(Raag.Fm).mp3"
+  // const s3Mp3Url= "https://melody-music-tracks.s3-accelerate.amazonaws.com/A+Catalyst+Thought+Pagglait+320+Kbps.mp3"
+  // const s3Mp3Url= "https://melody-music-tracks.s3.ap-south-1.amazonaws.com/Aaj+Phir+Remix+By+Dj+Shiva+Hate+Story+2+320+Kbps.mp3"
+  // const s3Mp3Url= "https://melody-music-tracks.s3.ap-south-1.amazonaws.com/Aankhein+Khuli+-+(Raag.Fm).mp3"
+  // const s3Mp3Url= "https://melody-music-tracks.s3.ap-south-1.amazonaws.com/Aakhri+Kadam+Tak+-+(Raag.Fm).mp3"
+  // const s3Mp3Url= "https://track-and-images.s3.eu-north-1.amazonaws.com/8cf3c2ab-d6cd-42db-b546-5c311c05cf4f.mp3"
+  const [play, {pause, duration, sound}] = useSound(s3Mp3Url, {volume, onend: ()=> {setTrackProgress(0); setTrackTimeStamp(0); setPaused(true)}}); // duration is in milliseconds, floating to more than 4-5 digits
   const [seekTime, setSeekTime] = useState(10); // Default seek position (in seconds) to be used as- sound.seek(seekTime)
 
   useEffect(()=>{
